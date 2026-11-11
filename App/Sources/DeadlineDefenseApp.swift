@@ -108,6 +108,8 @@ enum Launch {
         case "split":
             if let heavy = model.active.first(where: { $0.weight == 3 }) { model.activeSheet = .split(heavy) }
         case "report", "pro":
+            // 今日も 2 体倒したところ
+            for _ in 0..<2 { if let foe = model.nextTarget { model.defeat(foe) } }
             model.activeSheet = .report
         case "settings":
             model.activeSheet = .settings

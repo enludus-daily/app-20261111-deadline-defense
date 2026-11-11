@@ -303,6 +303,8 @@ struct WaveBanner: View {
         .background(RoundedRectangle(cornerRadius: Theme.radiusL, style: .continuous).fill(Theme.card).shadow(color: Theme.shadowFloat, radius: 14, y: 6))
         .overlay(RoundedRectangle(cornerRadius: Theme.radiusL, style: .continuous).stroke(Theme.line, lineWidth: 1))
         .task {
+            // 撮影では消さない
+            guard Launch.scene == nil else { return }
             try? await Task.sleep(for: .seconds(6))
             model.dismissWaveBanner()
         }

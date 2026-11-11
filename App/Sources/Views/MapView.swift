@@ -104,7 +104,7 @@ struct MapView: View {
     /// 道の目盛り（残り 3 日・1 日・6 時間・1 時間）。城までの距離＝時間を、形で読めるようにする
     private func milestones(path: MarchPath) -> some View {
         let now = Date(timeIntervalSinceReferenceDate: 0)
-        let marks: [(Double, LocalizedStringKey)] = [(72, "3日"), (24, "1日"), (6, "6時間"), (1, "1時間")]
+        let marks: [(Double, LocalizedStringKey, CGFloat)] = [(72, "3日", 1), (24, "1日", 1), (6, "6時間", 1), (1, "1時間", -1)]
         return ForEach(Array(marks.enumerated()), id: \.offset) { _, mark in
             let t = Battlefield.progress(deadline: now.addingTimeInterval(mark.0 * 3600), now: now)
             let p = path.point(at: t)
@@ -117,7 +117,7 @@ struct MapView: View {
                     .font(.system(size: 9, weight: .medium))
                     .kerning(0.6)
                     .foregroundStyle(Theme.sub)
-                    .position(x: p.x + n.dx * 24, y: p.y + n.dy * 24)
+                    .position(x: p.x + n.dx * 24 * mark.2, y: p.y + n.dy * 24 * mark.2)
             }
         }
     }

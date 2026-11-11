@@ -152,7 +152,7 @@ struct CastleFigure: View {
     var shake: CGFloat = 0
 
     var body: some View {
-        VStack(spacing: 3) {
+        VStack(spacing: 12) {
             // 守り（10 本の小さな旗の棒）
             HStack(spacing: 2) {
                 ForEach(0..<Battlefield.castleMax, id: \.self) { i in
@@ -175,7 +175,7 @@ struct CastleFigure: View {
                         Pennant().fill(Theme.tape.opacity(0.9)).frame(width: 9, height: 7)
                     }
                 }
-                .offset(y: -50)
+                .offset(y: -45)
             }
             .frame(width: 66, height: 44)
         }
@@ -195,46 +195,53 @@ struct Pennant: Shape {
     }
 }
 
-/// 砲台：丸い台に砲身。種類で頭の形が変わる
+/// 砲台：上が凸凹の小さな塔。窓の色と形で種類が分かる
 struct TowerFigure: View {
     var kind: TowerKind
     var firing = false
 
     var body: some View {
         ZStack {
-            Ellipse().fill(Theme.ink.opacity(0.06)).frame(width: 26, height: 8).offset(y: 12)
-            RoundedRectangle(cornerRadius: 5, style: .continuous)
+            Ellipse().fill(Theme.ink.opacity(0.07)).frame(width: 28, height: 8).offset(y: 14)
+            TowerBody()
                 .fill(Theme.card)
-                .overlay(RoundedRectangle(cornerRadius: 5, style: .continuous).stroke(Theme.skyDeep.opacity(0.8), lineWidth: 1))
-                .frame(width: 20, height: 18)
+                .overlay(TowerBody().stroke(Theme.skyDeep.opacity(0.85), lineWidth: 1))
+                .frame(width: 20, height: 26)
+                .offset(y: 1)
+            window
                 .offset(y: 3)
-            head
-                .offset(y: -8)
+            if kind == .morning {
+                ForEach(0..<6, id: \.self) { i in
+                    Capsule().fill(Theme.butter).frame(width: 2, height: 4)
+                        .offset(y: -8)
+                        .rotationEffect(.degrees(Double(i) * 60))
+                        .offset(y: 3)
+                }
+            }
         }
-        .scaleEffect(firing ? 1.12 : 1)
-        .frame(width: 30, height: 34)
+        .scaleEffect(firing ? 1.15 : 1)
+        .frame(width: 30, height: 36)
         .accessibilityHidden(true)
     }
 
     @ViewBuilder
-    private var head: some View {
+    private var window: some View {
         switch kind {
         case .basic:
-            Circle().fill(Theme.sky).overlay(Circle().stroke(Theme.skyDeep, lineWidth: 1)).frame(width: 12, height: 12)
+            Circle().fill(Theme.sky).overlay(Circle().stroke(Theme.skyDeep, lineWidth: 0.8)).frame(width: 8, height: 8)
         case .morning:
-            ZStack {
-                ForEach(0..<8, id: \.self) { i in
-                    Capsule().fill(Theme.butter).frame(width: 2, height: 5).offset(y: -9).rotationEffect(.degrees(Double(i) * 45))
-                }
-                Circle().fill(Theme.butter).overlay(Circle().stroke(Theme.peachDeep.opacity(0.8), lineWidth: 1)).frame(width: 12, height: 12)
-            }
+            Circle().fill(Theme.butter).overlay(Circle().stroke(Theme.peachDeep.opacity(0.8), lineWidth: 0.8)).frame(width: 8, height: 8)
         case .rapid:
             HStack(spacing: 2) {
-                Circle().fill(Theme.lavender).overlay(Circle().stroke(Theme.skyDeep, lineWidth: 1)).frame(width: 9, height: 9)
-                Circle().fill(Theme.lavender).overlay(Circle().stroke(Theme.skyDeep, lineWidth: 1)).frame(width: 9, height: 9)
+                Capsule().fill(Theme.lavender).overlay(Capsule().stroke(Theme.skyDeep, lineWidth: 0.8)).frame(width: 4, height: 8)
+                Capsule().fill(Theme.lavender).overlay(Capsule().stroke(Theme.skyDeep, lineWidth: 0.8)).frame(width: 4, height: 8)
             }
         }
     }
+}
+
+struct TowerBody: Shape {
+    func path(in rect: CGRect) -> Path { CastleShape.tower(rect) }
 }
 
 /// 紙のテープ（StudyReel の TapeShape にならう：両端がぎざぎざ）。共有カードと見出しの飾りに少しだけ

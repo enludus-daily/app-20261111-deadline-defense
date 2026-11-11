@@ -33,6 +33,22 @@
         }
       }
     },
+    "12週": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "12 weeks"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "12週"
+          }
+        }
+      }
+    },
     "1回だけのお支払い。ファミリー共有に対応しています。": {
       "localizations": {
         "en": {
@@ -157,22 +173,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "3日"
-          }
-        }
-      }
-    },
-    "4週": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "4 weeks"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "4週"
           }
         }
       }

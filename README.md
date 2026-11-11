@@ -1,36 +1,96 @@
-# daily-app-template
+# しめきりディフェンス（Deadline Defense）
 
-enludus-daily で毎日作る iOS アプリ（SwiftUI）のテンプレート。テンプレートから作ったリポジトリでは、この README をそのアプリの説明に書き換える。
+**締め切りが敵になって、城（今日の自分）へ歩いてくる ToDo。** 先延ばし × タワーディフェンス。
 
-## 中身
+- だれの：締め切りのある用事（提出物・支払い・返信・申し込み）を、気が重くて後回しにしてしまう人
+- どう使う：用事を 1 行＋締め切りのチップ（今夜・明日・今週）で入れる → 地図の道を敵が歩き始める（城に近いほど締め切りが近い）→ 本当に済ませた瞬間に ◎ を押すと、砲台が撃って敵が消える
+- 大きい敵（重い用事）は長押しで小さく分ける。小さい敵は 1 回で倒れる＝先延ばし対策の「小さく分ける」が遊びの得になる
+- 締め切りを過ぎた敵は城に届き、城の守りが少し減る（翌日は元どおり）。責めずに「明日の波に回す」ができる
+- データは端末の中だけ（UserDefaults）。アカウント・通信・解析なし
 
-| パス | 役割 |
+## 世界観
+このアプリでは **〔締め切り〕が〔道を歩く時計の顔の小さな敵〕**、**〔今日の自分〕が〔道の終わりの城〕**、**〔済ませる力〕が〔砲台〕** になる。
+
+- 道の位置は、残り時間を対数で縮めて決める（1 週間 → 入口、1 日 → 約 37%、1 時間 → 約 86%、締め切り → 城）。全部の敵が同じ物差しなので、「どれが近いか」が地図を見るだけで分かる
+- 道に「3日・1日・6時間・1時間」の目盛り
+- 敵の大きさ＝重さ（軽い 24pt・ふつう 32pt・重い 42pt、重い敵は角）。体の色＝段階（遠い sky → 1 日以内 butter → 1 時間以内 peach）。顔の時計の扇＝残りの割合
+- 城の上に守りの棒 10 本、レベルで旗と砲台が増える
+
+## 画面
+1. 戦場：地図・次に倒す 1 体・1 行の追加・今日の波（時刻つきの縦のタイムライン）・今日の作戦
+2. 戦果：今日の 1 枚の絵（共有できる）・守った日・倒した数・守った日のマス（無料 12 週 / Pro 52 週）・Pro のくわしい記録
+3. 設定：音と振動・お知らせ・地図・砲台・Pro・使い方・見本・プライバシー
+- 分ける（シート）、課金の画面、オンボーディング 3 ページ（動く見本）
+
+iPhone Duo の内側（regular）では左に地図、右に一覧。外側とほかの iPhone では縦に並べる（size class で決める）。
+
+## 参考にした UI（ui-reference）
+- StudyReel：トーン（sky＋peach、セリフの見出しと数字、細い線、弱い影、テープ）
+- Structured：今日の用事を、時刻の付いた縦の 1 本の線に並べる → 「今日の波」
+- Finch：行動に毎回やさしく反応する → 城の上の一言（「助かった！」「3連続！」「少し届いたけど、大丈夫」）
+- Pokémon Sleep：1 日の結果発表 → 戦果の 1 枚
+
+## 手応えの表
+| できごと | 動き | 振動 | 音 |
+|---|---|---|---|
+| 押す（チップ・敵を選ぶ） | 0.96 倍に縮む（spring 0.25） | selection | tap 1320Hz 30ms（0.35） |
+| 敵を出す | 敵が 0.3 → 1 倍に出る（spring 0.45） | selection | wave 2 音（0.5） |
+| 1 体倒す | 近い砲台が弾み、玉が弧を描いて飛ぶ（0.26 秒）→ 光の輪 0.4→2 倍・敵が 1.25 倍にはじけて消える・点が浮かぶ | impact medium | defeat 2 音（0.6） |
+| 続けて倒す（10 分以内） | 点に「×n」、城の一言「n連続！」 | impact heavy | 連続ごとに 2 半音ずつ高くなる（0.6） |
+| 城に届く（失敗） | 城が横に揺れる（0,-6,5,-4,3,-2,0 px） | warning | 低い 2 音（0.55） |
+| 今日の波を守りきる（完了） | 城の一言・戦果へ | success | 4 音の上り（0.7） |
+| 場面の切れ目（その日初めて開く） | 「今日の波」の札が上からそっと出る（6 秒で消える） | — | wave 2 音 |
+
+動きを減らす設定では、玉・揺れ・弾みを止めて、敵はフェードで消える。効果音は消音スイッチに従い、ほかのアプリの音と混ぜる。効果音・振動は設定で切れる。
+
+## 毎日開く理由
+1. 朝の「今日の波」：今日やってくる敵の数と、今日の作戦（42 の作戦から日替わり）
+2. 守った日（連続）と守った日のマス、城のレベル（倒した重さ 8 ごとに上がり、砲台と旗が増える）
+3. 締め切りの少し前のお知らせ（「〇〇が城の前まで来ています」。オプトイン）
+4. 戦果の 1 枚を共有
+
+## 中身の量
+- 今日の作戦 42（日本語・英語）
+- 分け方の型 30（無料 8・Pro 22。名前から自動で勧める。日本語・英語）
+- 地図のテーマ 4（無料 1）、砲台 3 種（無料 1）
+
+## 作らなかったもの
+共有のタスク・同期・繰り返しの規則・カレンダー連携・Apple Intelligence（監督の指示）・ウィジェット（時間の都合。次の候補）。
+
+## デモで見せる流れ（`-demo`、約 20 秒・英語で録る）
+1. 見本の敵が道を歩いている地図。1 行で「Send the proposal」を入れると、重い敵が道に出る
+2. 城の前の敵から 2 体倒す（砲台が撃つ・連続）→ 重い敵を分けるシート → 3 体の小さい敵になる
+3. 小さい敵を続けて倒す（×2・×3…）→ 今日の戦果の 1 枚
+
+撮影の場面（`-screenshotScene`）：`field`・`shot`・`wave`・`split`・`report`・`pro`・`settings`・`paywall`・`clear`・`empty`・`onboarding`。撮影とデモは見本のデータで動かし、保存されたデータを書き換えない。
+
+## 課金
+**買い切りの Pro ¥600**（`com.enludus.daily.007.pro`、非消耗型、ファミリー共有あり）。中身が続けて増える仕組みではないので、サブスクにしない。
+
+- 無料：用事・締め切り・敵・砲台（見張り）・分ける（型 8）・明日に回す・お知らせ・今日の戦果・12 週のマス。数の上限なし
+- Pro：①地図のテーマ 3（港・雪原・夕暮れ）②朝の砲台（正午までに倒すと 2 倍）・連射台（連続が 30 分続く）③分け方の型 30 ④1 年の戦いの記録（52 週のマス・期限内に倒した割合・よく倒す時間・これまでの点）
+- 課金の画面を出すのは、今日の波を守りきった直後（1 日 1 回まで・3 体以上倒してから）と、鍵のある物を押したときだけ。起動時には出さない。画面の中で地図のテーマを実物で見比べられる。購入を復元できる
+
+### 勝算の表
+| 項目 | 内容 |
 |---|---|
-| `project.yml` | XcodeGen の spec。`.xcodeproj` はコミットしない |
-| `App/Sources/`, `Tests/` | ひな形のアプリとテスト（Swift Testing） |
-| `App/Resources/` | アイコン、アクセントカラー、`PrivacyInfo.xcprivacy` |
-| `.github/workflows/ci.yml` | push / PR で daily-actions の `ios-ci.yml` を呼ぶ（40 桁の SHA で固定） |
-| `.github/workflows/testflight.yml` | 手動（workflow_dispatch）で `ios-testflight.yml` を呼ぶ（アップロードのあと内部テストに配信） |
-| `.github/workflows/asc.yml` | 手動で `ios-asc.yml` を呼ぶ（App Store Connect に名前・説明などを入れる / 最新ビルドを配信） |
-| `docs/app-store.json`, `PRIVACY.md` | App Store Connect に入れる情報、プライバシーポリシー |
-| `scripts/pin-daily-actions.sh` | daily-actions の SHA を書き換える（整備用のセッションか本人だけ。自己 CI の成功を確かめる） |
-| `scripts/new-app.sh` | 名前・表示名・枠（Bundle ID）に書き換える |
-| `scripts/preflight-push.sh`, `.githooks/pre-push` | push の前の検査（秘密・個人情報）と1日の上限 |
-| `scripts/scan-sensitive.sh` | 検査の複製（正本は daily-actions/scan/。違うと CI が警告） |
-| `scripts/make-icon.py` | アイコンを作る（Pillow） |
-| `.claude/skills/` | dev-lifecycle / dev-judgment / dev-workflow（naki0227/useful-map から取得） |
-| `CLAUDE.md`, `docs/daily-runbook.md` | 毎日のセッションの決まりと手順 |
-| `docs/app-store.md` | 審査の危険・本人がすることの記録 |
+| 払う理由 3 つ | ①毎日見る地図を自分の気分に変えたい（使うほど見る回数が増える）②朝型・まとめ型など、自分の倒し方に合う砲台で点を伸ばしたい ③確定申告・引っ越しなど「重くて手が止まる用事」を型で分けたい。悩みの強さ：先延ばしは 20〜30 代の強い悩み（東洋経済 https://toyokeizai.net/articles/-/933372 、ライフハッカー https://www.lifehacker.jp/article/2512-tinyhack-sakinobashi-suzukishinsuke/ ）。ゲーム化の ToDo に有料の需要がある（下の表） |
+| 比べたアプリ | 下の表 |
+| 値段の位置 | Habitica・Finch は年 ¥5,000 以上のサブスク。¥600 の 1 回で、地図・砲台・型・1 年の記録まで入る。Pro の中身 4 つ ÷ ¥600 で、同じ分野の 1 か月分より安い |
+| 売上の幅 | 月 300 / 1,000 / 3,000 インストール × 2% × ¥510（¥600 − 手数料 15%）→ 約 ¥3,000 / ¥10,000 / ¥31,000 |
+| 弱点 | 無料で十分に使えるので払われない → 価値を感じた直後にだけ出し、テーマを実物で見せる。1 年の記録は使い込んだ人ほど欲しくなる |
 
-## 手元（Mac）で開く
+| 比べたアプリ（2026-11-11 調べ） | 形・値段 | 中身 | 推定の売上 |
+|---|---|---|---|
+| Habitica（https://apps.apple.com/dk/app/id994882113） | サブスク 月 $4.99 | RPG の ToDo・習慣 | iOS 月 $<10K・MAU 約 9K、Android 月 $10K+（AppGoblin https://appgoblin.info/apps/994882113 ） |
+| Finch（https://adapty.io/paywall-library/finch/） | サブスク（年額中心） | ペットを育てる習慣 | 月 約 $1M（Adapty） |
+| BattleTask（https://apps.apple.com/vc/app/battletask-gamified-to-do-rpg/id6504790750） | サブスク | モンスターを倒す ToDo | 未確認 |
+| Crimson Box（https://apps.apple.com/app/id1069271059） | 買い切り | 締め切りを過ぎると隕石が落ちる | 未確認 |
+| Doom List（https://apps.apple.com/us/app/doom-list/id6758519856） | — | タスクを壊す | 未確認 |
 
-```sh
-brew install xcodegen   # CI は 2.46.0 で固定
-xcodegen generate
-open DailyApp.xcodeproj
-```
+締め切りが**本物の時間で行進してくる**タワーディフェンスの形の ToDo は、上のどれにもない。
 
-## 版
-
-- Xcode 27.1（ランナー `xcode-27`。GitHub では Preview 扱い）、iOS 18.0 以降、iPhone だけ（iPhone Duo の内側の画面にも合わせる）、Swift 6
-- スキルの取得元：`naki0227/personal-knowledge`（Vault、private）の `templates/repo-bootstrap/.claude/skills/` を、本人の整備用セッションで写す（2026-11-05 に app-quality-bar を追加）
+## 開発
+- ビルドとテストは GitHub Actions（`.github/workflows/ci.yml`）。テストは `Tests/`（Swift Testing）：位置・段階・倒す・連続・分ける・明日に回す・城に届く・守った日・マス・中身の数
+- 画面の英語：`docs/i18n/en.tsv` に書き、`python3 scripts/strings-check.py --write` で `App/Resources/Localizable.xcstrings` を作る（日本語の文字に英語の抜けがあれば exit 1）
+- トーン：`python3 scripts/tone-check.py`

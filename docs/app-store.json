@@ -1,21 +1,21 @@
 {
   "_doc": "App Store Connect に API で入れる情報（.github/workflows/asc.yml の metadata が読む）。文字数：name・subtitle 30、keywords 100（カンマ区切り）、promotionalText 170、description 4000。カテゴリの ID は EDUCATION・PRODUCTIVITY・UTILITIES・LIFESTYLE・HEALTH_AND_FITNESS など。審査への提出と App プライバシーの申告は本人が行う。",
   "locale": "ja",
-  "name": "",
-  "subtitle": "",
-  "primaryCategory": "",
-  "secondaryCategory": "",
+  "name": "しめきりディフェンス",
+  "subtitle": "締め切りが歩いてくるToDo",
+  "primaryCategory": "PRODUCTIVITY",
+  "secondaryCategory": "LIFESTYLE",
   "supportUrl": "https://github.com/enludus-daily/app-20261111-deadline-defense/issues",
   "privacyPolicyUrl": "https://github.com/enludus-daily/app-20261111-deadline-defense/blob/main/PRIVACY.md",
-  "keywords": "",
-  "promotionalText": "",
-  "description": "",
-  "whatToTest": "",
+  "keywords": "ToDo,タスク,締め切り,先延ばし,やることリスト,タワーディフェンス,ゲーム化,習慣,リマインダー,提出,課題",
+  "promotionalText": "締め切りが敵になって、城（今日のあなた）へ歩いてきます。済ませた瞬間に砲台が撃つ。大きい用事は分けて倒す。先延ばしを、小さな防衛戦に。",
+  "description": "しめきりディフェンスは、締め切りのある用事を「城へ歩いてくる敵」にする ToDo です。\n\n■ 締め切りが、歩いてくる\n用事を1行で入れて、締め切りを「今夜・明日・今週」から選ぶだけ。用事は小さな時計の顔の敵になって、地図の道を城（今日のあなた）へ向かいます。城に近いほど締め切りが近く、地図を見るだけで「次に何をすればいいか」が分かります。\n\n■ 済ませたら、砲台が撃つ\n本当に済ませた瞬間に ◎ を押すと、砲台が撃って敵が消えます。続けて倒すと連続になり、点が伸びます。締め切りを過ぎた敵は城に届きますが、責めません。「明日の波に回す」で、また明日。\n\n■ 大きい敵は、分けて倒す\n重い用事は長押しで小さく分けると、1回で倒れる小さな敵になります。レポート・返信・支払い・発表など、分け方の型から選べます。\n\n■ 毎日の楽しみ\n・朝の「今日の波」と、日替わりの「今日の作戦」（42 の作戦）\n・守った日の連続と、守った日のマス\n・倒すほど城のレベルが上がり、砲台と旗が増える\n・今日の戦果を1枚の絵にして共有\n・締め切りの少し前のお知らせ（オン・オフできます）\n\n■ Pro（1回の買い切り）\n・地図のテーマ 3つ（港・雪原・夕暮れ）\n・朝の砲台（正午までに倒すと2倍）と連射台\n・分け方の型 30（確定申告・引っ越し・履歴書など）\n・1年の戦いの記録（52週のマス・期限内に倒した割合・よく倒す時間）\n用事・締め切り・敵・砲台・分ける・お知らせ・今日の戦果は、ずっと無料です。\n\n■ プライバシー\nデータはこの iPhone の中だけに保存します。アカウント・広告・解析はありません。",
+  "whatToTest": "1) 用事を1行で入れ、締め切りのチップを選んで「道に出す」→ 地図の道に敵が出ること。2) ◎ を押すと砲台が撃って敵が消え、続けて倒すと「×2」になること。3) 重い敵を長押しして分けること。4) 戦果の画面と共有。5) 設定 > Pro でできること から購入と復元（サンドボックス）。6) iPhone Duo の内側では左に地図、右に一覧になること。英語の端末でも確かめてください。",
   "en-US": {
-    "name": "",
-    "subtitle": "",
-    "keywords": "",
-    "promotionalText": "",
-    "description": ""
+    "name": "Deadline Defense",
+    "subtitle": "Your to-dos march on a castle",
+    "keywords": "todo,task,deadline,procrastination,tower defense,gamified,planner,reminder,productivity,focus",
+    "promotionalText": "Every deadline becomes a little foe marching toward your castle. Finish a task and your tower fires. Split big tasks to beat them. Gentle defense for procrastinators.",
+    "description": "Deadline Defense turns tasks with deadlines into foes that walk toward your castle — you, today.\n\nDEADLINES MARCH TOWARD YOU\nType a task in one line and pick Tonight, Tomorrow, or This week. It becomes a small clock-faced foe walking down the road. The closer it is to the castle, the sooner it's due — so one glance at the map tells you what to do next.\n\nFINISH IT, THE TOWER FIRES\nTap ◎ the moment you actually finish. A tower fires and the foe pops. Beat several in a row to build a streak. If a deadline passes, the foe reaches the castle — no guilt. Just move it to tomorrow's wave.\n\nSPLIT BIG FOES\nLong-press a heavy task to split it into small foes that fall in one shot. Use templates for reports, replies, payments, talks, and more.\n\nREASONS TO COME BACK\n- Today's wave each morning, plus a daily tactic (42 of them)\n- Your defense streak and a grid of defended days\n- Your castle levels up as you win, adding towers and flags\n- Share today's battle report as a card\n- Optional reminders shortly before each deadline\n\nPRO (ONE-TIME PURCHASE)\n- 3 map themes: Harbor, Snowfield, Dusk\n- Morning Tower (double points before noon) and Rapid Tower\n- 30 split templates (taxes, moving, resumes, and more)\n- A year of records: 52-week grid, on-time rate, best hour\nTasks, deadlines, foes, towers, splitting, reminders, and today's report are free forever.\n\nPRIVACY\nYour data stays on this iPhone. No account, no ads, no analytics."
   }
 }

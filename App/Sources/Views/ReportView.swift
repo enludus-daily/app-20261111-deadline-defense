@@ -41,12 +41,12 @@ struct ReportView: View {
                                 .font(Theme.serif(16, .medium))
                                 .foregroundStyle(Theme.ink)
                             Spacer()
-                            Text(model.isPro ? LocalizedStringKey("52週") : LocalizedStringKey("4週"))
+                            Text(model.isPro ? LocalizedStringKey("52週") : LocalizedStringKey("12週"))
                                 .font(.system(size: 11, weight: .medium))
                                 .kerning(0.6)
                                 .foregroundStyle(Theme.sub)
                         }
-                        Heatmap(weeks: chronicle.weeks(model.isPro ? 52 : 4, now: model.now), compact: model.isPro)
+                        Heatmap(weeks: chronicle.weeks(model.isPro ? 52 : 12, now: model.now), compact: model.isPro)
                     }
 
                     proSection(chronicle)
@@ -289,8 +289,8 @@ struct Heatmap: View {
     var compact = false
 
     var body: some View {
-        let cell: CGFloat = compact ? 9 : 22
-        let gap: CGFloat = compact ? 2 : 4
+        let cell: CGFloat = compact ? 9 : 18
+        let gap: CGFloat = compact ? 2 : 3
         ScrollView(.horizontal) {
             HStack(alignment: .top, spacing: gap) {
                 ForEach(Array(weeks.enumerated()), id: \.offset) { _, week in
