@@ -8,7 +8,7 @@
       "internalID" : "6A11B0D7",
       "localizations" : [
         { "description" : "地図のテーマ・砲台・分け方の型30・1年の記録", "displayName" : "しめきりディフェンス Pro", "locale" : "ja" },
-        { "description" : "Map themes, towers, 30 split templates, yearly records", "displayName" : "Deadline Defense Pro", "locale" : "en_US" }
+        { "description" : "Themes, towers, 30 templates, yearly records", "displayName" : "Deadline Defense Pro", "locale" : "en_US" }
       ],
       "productID" : "com.enludus.daily.007.pro",
       "referenceName" : "Deadline Defense Pro",
