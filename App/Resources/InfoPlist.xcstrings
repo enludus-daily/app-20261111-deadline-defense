@@ -1,0 +1,23 @@
+{
+  "sourceLanguage": "ja",
+  "strings": {
+    "CFBundleDisplayName": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "__APP_NAME__"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "__APP_NAME__"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}
