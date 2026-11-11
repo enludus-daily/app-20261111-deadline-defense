@@ -7,13 +7,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "__APP_NAME__"
+            "value": "しめきりディフェンス"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "__APP_NAME__"
+            "value": "Deadline Defense"
           }
         }
       }

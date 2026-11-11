@@ -3,15 +3,23 @@
   "products": [
     {
       "type": "NON_CONSUMABLE",
-      "productId": "com.enludus.daily.template.pro",
-      "referenceName": "Pro",
-      "price": 480,
+      "productId": "com.enludus.daily.007.pro",
+      "referenceName": "Deadline Defense Pro",
+      "price": 600,
       "familySharable": true,
-      "reviewNote": "Pro を買うと、すべての〇〇と詳しい振り返りが使えます。課金の画面は設定 > Pro から開けます。",
+      "reviewNote": "Pro を買うと、地図のテーマ 3 つ・朝の砲台と連射台・分け方の型 30・1 年の戦いの記録が使えます。課金の画面は 設定 > Pro でできること から開けます。買い切り（非消耗型）です。",
       "reviewScreenshot": "docs/iap/paywall.png",
       "localizations": [
-        {"locale": "ja", "name": "Pro", "description": "すべての〇〇と詳しい振り返り"},
-        {"locale": "en-US", "name": "Pro", "description": "All 〇〇 and detailed reviews"}
+        {
+          "locale": "ja",
+          "name": "しめきりディフェンス Pro",
+          "description": "地図のテーマ・砲台・分け方の型30・1年の記録"
+        },
+        {
+          "locale": "en-US",
+          "name": "Deadline Defense Pro",
+          "description": "Map themes, towers, 30 split templates, yearly records"
+        }
       ]
     }
   ]

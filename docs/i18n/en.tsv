@@ -1,0 +1,152 @@
+# 画面の英語（日本語のキー<TAB>英語）。scripts/strings-check.py --write で Localizable.xcstrings を作る。%lld は数、%@ は文字
+今日も城を守ろう	Let's guard the castle today
+助かった！	That helped!
+%lld連続！ その調子	%lld in a row! Keep going
+今日の波を守りきった！	You held off today's wave!
+明日の波でまた会おう	See you in tomorrow's wave
+少し届いたけど、大丈夫	A few got through. That's okay
+小さくなった。倒しやすい！	Smaller now. Easier to beat!
+見本の敵です。倒してみて	It's a sample foe. Try taking it down
+しめきりが近づいています	A deadline is closing in
+「%@」が城の前まで来ています	"%@" has reached the castle gate
+草原	Meadow
+港	Harbor
+雪原	Snowfield
+夕暮れ	Dusk
+締め切りのある用事を1行で	A task with a deadline, in one line
+道に出す	Send out
+日時	Date
+締め切り	Deadline
+今夜	Tonight
+明日	Tomorrow
+今週	This week
+しめきりディフェンス	Deadline Defense
+城 Lv.%lld	Castle Lv.%lld
+守った日 %lld	Days defended %lld
+戦果	Report
+設定	Settings
+城に届いた敵	At the castle
+次に倒す1体	Next foe
+見本	Sample
+済ませた	Done
+分ける	Split
+明日に回す	Tomorrow
+道に敵はいません	The road is clear
+締め切りのある用事を1行で入れると、敵になって歩き始めます。	Type a task with a deadline and it starts marching as a foe.
+軽い	Light
+ふつう	Medium
+重い	Heavy
+今日の波	Today's wave
+今日の締め切りはありません	No deadlines today
+今日、%lld体がやってきます	%lld foes are coming today
+閉じる	Close
+戦場の地図	Battlefield map
+3日	3 days
+1日	1 day
+6時間	6 hours
+1時間	1 hour
+1週間	1 week
+ダブルタップで選ぶ	Double-tap to select
+倒した	Defeated
+あと%lld分	%lld min left
+あと%lld時間	%lld hr left
+あと%lld日	%lld days left
+城に届いています	At the castle
+とばす	Skip
+次へ	Next
+城を守りはじめる	Start defending
+締め切りが、歩いてくる	Deadlines march toward you
+済ませたら、砲台が撃つ	Finish a task, the tower fires
+大きい敵は、分けて倒す	Split big foes to beat them
+用事を1行で入れると、敵になって城（今日のあなた）へ向かいます。城に近いほど、締め切りが近い。	Each task becomes a foe walking toward your castle — that's you, today. The closer it gets, the sooner it's due.
+本当に済ませた瞬間に◎を押すと、砲台が撃って敵が消えます。続けて倒すと連続になります。	Tap ◎ the moment you actually finish. A tower fires and the foe pops. Beat several in a row for a streak.
+重い敵は長押しで小さく分けると、1回で倒れます。データはこの iPhone の中だけに残ります。	Long-press a heavy foe to split it into small ones that fall in one shot. Your data stays on this iPhone.
+城を、もっと自分の形に	Make the castle yours
+しめきりディフェンス Pro は、1回の買い切りです。サブスクではありません。	Deadline Defense Pro is a one-time purchase. No subscription.
+地図のテーマ 3つ	3 map themes
+港・雪原・夕暮れ。毎日見る道を、気分で変えられます。	Harbor, Snowfield, and Dusk. Change the road you see every day.
+朝の砲台・連射台	Morning Tower and Rapid Tower
+正午までに倒すと2倍。続けて倒すと連続が長く続きます。	Double points before noon. Keep your streak alive longer.
+分け方の型 30	30 split templates
+確定申告・引っ越し・履歴書・旅行の予約など。無料は8つ。	Taxes, moving, resumes, trip booking and more. 8 are free.
+1年の戦いの記録	A year of battle records
+52週のマス、期限内に倒した割合、よく倒す時間。	A 52-week grid, your on-time rate, and your best hour.
+用事・締め切り・敵・砲台・分ける・通知・今日の戦果は、ずっと無料です。	Tasks, deadlines, foes, towers, splitting, reminders, and today's report are free forever.
+購入を復元	Restore Purchase
+Pro を復元しました	Pro restored
+復元できる購入が見つかりませんでした	No purchase to restore was found
+プライバシーポリシー	Privacy Policy
+今日の波を守りきりました	You held off today's wave
+地図のテーマは Pro	Map themes are Pro
+この砲台は Pro	This tower is Pro
+この型は Pro	This template is Pro
+1年の記録は Pro	Yearly records are Pro
+ありがとうございます！ Pro が使えます	Thank you! Pro is unlocked
+購入の承認を待っています	Waiting for purchase approval
+購入できませんでした。時間をおいてもう一度お試しください	The purchase didn't go through. Please try again later
+Pro を買う	Get Pro
+1回だけのお支払い。ファミリー共有に対応しています。	Pay once. Family Sharing supported.
+いまは購入できません	Purchases aren't available right now
+App Store につながらないようです。電波のよい所で、もう一度開いてください。	We couldn't reach the App Store. Try again with a better connection.
+もう一度読み込む	Try again
+今日の戦果	Today's report
+戦果の絵を共有	Share report card
+守った日のマス	Days defended
+52週	52 weeks
+4週	4 weeks
+守った日	Days defended
+倒した敵	Foes defeated
+分けて倒した	Beaten by splitting
+くわしい戦いの記録	Detailed records
+締め切りまでに倒した割合	On-time rate
+よく倒す時間	Best hour
+%lld時台	%lld:00
+これまでの点	Total points
+城のレベル	Castle level
+1年のマス・期限内に倒した割合・よく倒す時間	Yearly grid, on-time rate, and best hour
+Pro で見られます	Available with Pro
+体を倒した	foes defeated
+点	Points
+城の守り	Castle HP
+音と振動	Sound & Haptics
+効果音	Sound effects
+振動	Haptics
+お知らせ	Reminders
+締め切りの少し前に知らせる	Remind me before deadlines
+お知らせが許可されていません。設定アプリで「通知」をオンにすると届きます。	Notifications are off. Turn them on in Settings to get reminders.
+設定を開く	Open Settings
+地図	Map
+砲台	Towers
+Pro を使っています	You have Pro
+ありがとうございます。すべての地図・砲台・型・1年の記録が使えます。	Thank you. All maps, towers, templates, and yearly records are unlocked.
+Pro でできること	What Pro includes
+使い方	How to use
+使い方をもう一度見る	Show the tutorial again
+見本の敵を出す	Bring back sample foes
+プライバシー	Privacy
+データは端末の中だけ	Your data stays on device
+用事・締め切り・戦果はこの iPhone の中にだけ保存します。外に送らず、アカウントもありません。	Tasks, deadlines, and reports are saved only on this iPhone. Nothing is sent anywhere, and there's no account.
+バージョン %@	Version %@
+見張りの砲台	Watch Tower
+朝の砲台	Morning Tower
+連射台	Rapid Tower
+済ませるたびに1発。いつでも使える	One shot per task. Always available
+正午までに倒すと点が2倍	Double points before noon
+連続が30分続く（ふつうは10分）	Streaks last 30 min (normally 10)
+小さい敵は1回で倒れます。締め切りは同じまま。	Small foes fall in one shot. The deadline stays the same.
+小さな一歩	A small step
+一歩を足す	Add a step
+分け方の型	Split templates
+やめる	Cancel
+今日の締め切りはありません。先の敵を倒しておくと、早めの得点が付きます。	No deadlines today. Beat future foes early for bonus points.
+その先	Coming up
+今日倒した	Defeated today
+· %@から	· from %@
+· 回した %lld	· moved %lld
+明日の波に回す	Move to tomorrow's wave
+消す	Delete
+戻す	Undo
+いま道を歩いているのは見本の敵です	These are sample foes on the road
+◎ を押すと砲台が撃ちます。長押しで分けられます。	Tap ◎ to fire a tower. Long-press to split.
+見本を片づけて、自分の用事を入れる	Clear samples and add my own tasks
+今日の作戦	Today's tactic
