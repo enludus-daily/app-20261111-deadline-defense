@@ -140,8 +140,8 @@ enum Launch {
             // 今日の波を全部倒した直後
             for foe in model.todaysWave { model.defeat(foe) }
         case "shot":
-            // 砲台が撃った瞬間
-            if let foe = model.nextTarget { model.defeat(foe) }
+            // 砲台が撃った瞬間（塔から少し離れた重い敵を撃つ。弾の通り道が見えるように）
+            if let foe = model.active.first(where: { $0.weight == 3 }) ?? model.nextTarget { model.defeat(foe) }
         default:
             break
         }

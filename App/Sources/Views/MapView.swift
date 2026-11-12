@@ -237,7 +237,7 @@ struct ShotView: View {
                     p.addQuadCurve(to: shot.to, control: CGPoint(x: (shot.from.x + shot.to.x) / 2, y: (shot.from.y + shot.to.y) / 2 - 48))
                 }
                 .trim(from: 0, to: flight)
-                .stroke(Theme.skyDeep.opacity(0.55), style: StrokeStyle(lineWidth: 1.6, lineCap: .round, dash: [3, 4]))
+                .stroke(Theme.skyDeep.opacity(0.7), style: StrokeStyle(lineWidth: 2, lineCap: .round, dash: [4, 4]))
             }
             // 倒れる敵（はじけて小さくなる）
             FoeFigure(weight: shot.foe.weight, stage: shot.stage, progress: shot.progress)
@@ -268,7 +268,7 @@ struct ShotView: View {
         .task {
             if freeze {
                 // 撮影用：弾が敵に届く少し前で止める
-                flight = 0.72
+                flight = 0.55
                 return
             }
             if reduceMotion {
