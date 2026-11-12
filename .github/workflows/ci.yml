@@ -23,7 +23,8 @@ jobs:
       test-destination: "platform=iOS Simulator,name=iPhone Duo,OS=27.1"
       screenshot-device: iPhone Duo
       # 撮る画面（アプリが起動引数 -screenshotScene <名前> で開く画面。@dark でダークモード）。手順書 9.5
-      screenshot-scenes: launch launch@en field field@en shot wave split report report@en pro settings paywall paywall@en clear empty
+      # 名前の後ろの _ja は、アプリが日本語で開く（CI のシミュレータは英語のため。#20）
+      screenshot-scenes: launch@en field_ja field@en shot_ja shot@en wave_ja split_ja report_ja report@en pro_ja settings_ja paywall_ja paywall@en clear_ja empty_ja
       # YouTube の「AI が毎日アプリを作る」シリーズ用：起動引数 -demo の再生を英語で録る（artifact demo-video）。手順書 7〜9
       demo-video: en
       guard-disabled: ${{ vars.DAILY_GUARD_DISABLED == 'true' && 'true' || 'false' }}

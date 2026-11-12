@@ -12,9 +12,9 @@ struct FoeFigure: View {
 
     static func diameter(weight: Int) -> CGFloat {
         switch weight {
-        case 1: return 24
-        case 2: return 32
-        default: return 42
+        case 1: return 30
+        case 2: return 38
+        default: return 48
         }
     }
 

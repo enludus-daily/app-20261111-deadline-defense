@@ -32,7 +32,7 @@ struct PaywallView: View {
                     // 地図のテーマを実物で見比べる（払う前に試せる）
                     VStack(alignment: .leading, spacing: 8) {
                         MiniMap(theme: previewTheme)
-                            .frame(height: 180)
+                            .frame(height: 150)
                             .clipShape(RoundedRectangle(cornerRadius: Theme.radiusL, style: .continuous))
                             .overlay(RoundedRectangle(cornerRadius: Theme.radiusL, style: .continuous).stroke(Theme.line, lineWidth: 1))
                             .animation(.easeOut(duration: 0.25), value: previewTheme)
@@ -60,26 +60,29 @@ struct PaywallView: View {
                         .foregroundStyle(Theme.sub)
                         .fixedSize(horizontal: false, vertical: true)
 
-                    buyArea
-
-                    HStack(spacing: 16) {
-                        Button("購入を復元") {
-                            Task {
-                                await model.purchases.restore()
-                                message = model.isPro ? LocalizedStringKey("Pro を復元しました") : LocalizedStringKey("復元できる購入が見つかりませんでした")
-                            }
-                        }
-                        Link("プライバシーポリシー", destination: URL(string: "https://github.com/enludus-daily/app-20261111-deadline-defense/blob/main/PRIVACY.md")!)
-                    }
-                    .font(.system(size: 12))
-                    .foregroundStyle(Theme.skyDeep)
-                    .frame(maxWidth: .infinity)
                 }
                 .padding(20)
                 .frame(maxWidth: 560)
                 .frame(maxWidth: .infinity)
             }
             .background(Theme.paper)
+            // 値段・購入・復元は下に固定する（スクロールしなくても見える）
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                VStack(spacing: 10) {
+                    buyArea
+                    restoreRow
+                }
+                .padding(.horizontal, 20)
+                .padding(.top, 12)
+                .padding(.bottom, 8)
+                .frame(maxWidth: 560)
+                .frame(maxWidth: .infinity)
+                .background(
+                    Theme.paper
+                        .overlay(alignment: .top) { Rectangle().fill(Theme.line).frame(height: 1) }
+                        .ignoresSafeArea(edges: .bottom)
+                )
+            }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -95,6 +98,21 @@ struct PaywallView: View {
         .onChange(of: model.isPro) { _, isPro in
             if isPro { dismiss() }
         }
+    }
+
+    private var restoreRow: some View {
+        HStack(spacing: 16) {
+            Button("購入を復元") {
+                Task {
+                    await model.purchases.restore()
+                    message = model.isPro ? LocalizedStringKey("Pro を復元しました") : LocalizedStringKey("復元できる購入が見つかりませんでした")
+                }
+            }
+            Link("プライバシーポリシー", destination: URL(string: "https://github.com/enludus-daily/app-20261111-deadline-defense/blob/main/PRIVACY.md")!)
+        }
+        .font(.system(size: 12))
+        .foregroundStyle(Theme.skyDeep)
+        .frame(maxWidth: .infinity)
     }
 
     private var headline: LocalizedStringKey {

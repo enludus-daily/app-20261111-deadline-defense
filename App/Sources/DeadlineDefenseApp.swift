@@ -27,10 +27,12 @@ struct RootView: View {
         }
         .environment(model)
         .preferredColorScheme(.light)
+        .modifier(ForcedJapanese())
         .sheet(item: $model.activeSheet) { sheet in
             sheetView(sheet)
                 .environment(model)
                 .preferredColorScheme(.light)
+                .modifier(ForcedJapanese())
         }
         .sensoryFeedback(trigger: model.selectTick) { _, _ in model.hapticsOn ? .selection : nil }
         .sensoryFeedback(trigger: model.defeatTick) { _, _ in model.hapticsOn ? .impact(weight: .medium) : nil }
@@ -62,18 +64,37 @@ struct RootView: View {
     }
 }
 
+/// 撮影で日本語の画面を撮るとき、画面の文字と日付を日本語にする
+struct ForcedJapanese: ViewModifier {
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if Launch.forcesJapanese {
+            content.environment(\.locale, Locale(identifier: "ja_JP"))
+        } else {
+            content
+        }
+    }
+}
+
 /// 起動の仕方：ふつう・撮影（-screenshotScene <名前>）・デモ（-demo）。
 /// 撮影とデモは見本のデータで動かし、保存されたデータを書き換えない。
 @MainActor
 enum Launch {
+    /// 撮る画面の名前。後ろに _ja を付けると日本語で撮る（CI のシミュレータは英語。例：paywall_ja）
     static var scene: String? {
-        let value = UserDefaults.standard.string(forKey: "screenshotScene")
-        return (value?.isEmpty ?? true) || value == "launch" ? nil : value
+        var value = UserDefaults.standard.string(forKey: "screenshotScene") ?? ""
+        if value.hasSuffix("_ja") { value = String(value.dropLast(3)) }
+        return value.isEmpty || value == "launch" ? nil : value
+    }
+
+    static var forcesJapanese: Bool {
+        UserDefaults.standard.string(forKey: "screenshotScene")?.hasSuffix("_ja") ?? false
     }
 
     static var isDemo: Bool { ProcessInfo.processInfo.arguments.contains("-demo") }
 
     static func makeModel() -> AppModel {
+        Content.forcedJapanese = forcesJapanese
         if isDemo || scene != nil {
             let now = Date()
             let model = AppModel(persists: false, now: now, seed: Samples.foes(now: now, calendar: .current))

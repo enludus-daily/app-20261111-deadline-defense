@@ -19,15 +19,8 @@ struct MarchPath: Sendable {
         CGPoint(x: 0.50, y: 0.87),
     ]
 
-    /// 砲台を置く場所（割合）。レベルが上がると前から順に増える
-    static let towerSpots: [CGPoint] = [
-        CGPoint(x: 0.30, y: 0.80),
-        CGPoint(x: 0.80, y: 0.47),
-        CGPoint(x: 0.28, y: 0.28),
-        CGPoint(x: 0.66, y: 0.54),
-        CGPoint(x: 0.88, y: 0.86),
-        CGPoint(x: 0.12, y: 0.70),
-    ]
+    /// 砲台を置く道の位置（progress）。レベルが上がると前から順に増える。城に近い所から守る
+    static let towerProgress: [Double] = [0.90, 0.66, 0.44, 0.78, 0.26, 0.55]
 
     /// 城の場所（割合）
     static let castleSpot = CGPoint(x: 0.50, y: 0.93)
@@ -62,6 +55,24 @@ struct MarchPath: Sendable {
     }
 
     var totalLength: CGFloat { lengths.last ?? 0 }
+
+    /// 砲台の場所（地図の座標）。道の脇（道の中心から offset 離れた所）に置き、
+    /// 道のほかの曲がりに重ならない側を選ぶ。どの砲台も、守る道の区間のすぐ隣にある。
+    func towerPoints(count: Int, offset: CGFloat = 34) -> [CGPoint] {
+        Self.towerProgress.prefix(max(0, count)).map { t in
+            let base = point(at: t)
+            let n = normal(at: t)
+            let candidates = [CGPoint(x: base.x + n.dx * offset, y: base.y + n.dy * offset),
+                              CGPoint(x: base.x - n.dx * offset, y: base.y - n.dy * offset)]
+            let inside = candidates.filter { $0.x > 18 && $0.x < size.width - 18 && $0.y > 18 && $0.y < size.height - 18 }
+            return (inside.isEmpty ? candidates : inside).max { distanceToRoad($0) < distanceToRoad($1) } ?? base
+        }
+    }
+
+    /// 道（の中心線）までのいちばん近い距離
+    func distanceToRoad(_ p: CGPoint) -> CGFloat {
+        points.map { hypot($0.x - p.x, $0.y - p.y) }.min() ?? .greatestFiniteMagnitude
+    }
 
     /// 道の上の点（progress 0 = 入口、1 = 城の前）
     func point(at progress: Double) -> CGPoint {

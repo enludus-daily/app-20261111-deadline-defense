@@ -7,6 +7,8 @@ struct MapView: View {
     var focusID: UUID?
     var onTapFoe: (Foe) -> Void = { _ in }
     var onLongPressFoe: (Foe) -> Void = { _ in }
+    /// 撮影用：弾が飛んでいる途中で止める（-screenshotScene shot）
+    var freezeShots: Bool { Launch.scene == "shot" }
 
     @State private var shots: [ShotAnim] = []
     @State private var castleShake: CGFloat = 0
@@ -19,7 +21,7 @@ struct MapView: View {
             let path = MarchPath(size: size)
             let theme = model.effectiveTheme
             let level = model.chronicle.castleLevel
-            let towers = Array(MarchPath.towerSpots.prefix(min(MarchPath.towerSpots.count, 2 + level / 2)))
+            let towers = path.towerPoints(count: min(MarchPath.towerProgress.count, 2 + level / 2))
             ZStack {
                 ground(theme: theme, size: size)
                 road(path: path, theme: theme)
@@ -28,7 +30,7 @@ struct MapView: View {
 
                 ForEach(Array(towers.enumerated()), id: \.offset) { index, spot in
                     TowerFigure(kind: model.effectiveTower, firing: firingTower == index)
-                        .position(x: spot.x * size.width, y: spot.y * size.height)
+                        .position(spot)
                 }
 
                 CastleFigure(health: model.castleHealth, level: level, shake: castleShake)
@@ -39,7 +41,7 @@ struct MapView: View {
                 }
 
                 ForEach(shots) { shot in
-                    ShotView(shot: shot, reduceMotion: reduceMotion) {
+                    ShotView(shot: shot, reduceMotion: reduceMotion, freeze: freezeShots) {
                         shots.removeAll { $0.id == shot.id }
                     }
                 }
@@ -177,12 +179,13 @@ struct MapView: View {
             let target = model.stage(of: foe) == .breached
                 ? CGPoint(x: MarchPath.castleSpot.x * size.width, y: MarchPath.castleSpot.y * size.height - 30)
                 : path.point(at: progress, lane: foe.lane, spacing: 9)
-            let scaled = towers.map { CGPoint(x: $0.x * size.width, y: $0.y * size.height) }
-            let nearest = scaled.enumerated().min { hypot($0.element.x - target.x, $0.element.y - target.y) < hypot($1.element.x - target.x, $1.element.y - target.y) }
+            let nearest = towers.enumerated().min { hypot($0.element.x - target.x, $0.element.y - target.y) < hypot($1.element.x - target.x, $1.element.y - target.y) }
             let from = nearest?.element ?? CGPoint(x: MarchPath.castleSpot.x * size.width, y: MarchPath.castleSpot.y * size.height - 30)
             firingTower = nearest?.offset
-            withAnimation(.spring(response: 0.25, dampingFraction: 0.5).delay(0.18)) { firingTower = nil }
-            shots.append(ShotAnim(from: CGPoint(x: from.x, y: from.y - 10), to: target, foe: foe, stage: .near, progress: progress, combo: combo, points: points))
+            if !freezeShots {
+                withAnimation(.spring(response: 0.25, dampingFraction: 0.5).delay(0.18)) { firingTower = nil }
+            }
+            shots.append(ShotAnim(from: CGPoint(x: from.x, y: from.y - 14), to: target, foe: foe, stage: model.stage(of: foe), progress: progress, combo: combo, points: points))
         case .breach:
             guard !reduceMotion else { return }
             Task { @MainActor in
@@ -216,6 +219,7 @@ struct ShotAnim: Identifiable, Equatable {
 struct ShotView: View {
     let shot: ShotAnim
     let reduceMotion: Bool
+    var freeze = false
     let onFinish: @MainActor () -> Void
 
     @State private var flight: CGFloat = 0
@@ -224,8 +228,17 @@ struct ShotView: View {
 
     var body: some View {
         let x = shot.from.x + (shot.to.x - shot.from.x) * flight
-        let y = shot.from.y + (shot.to.y - shot.from.y) * flight - sin(flight * .pi) * 24
+        let y = shot.from.y + (shot.to.y - shot.from.y) * flight - 96 * flight * (1 - flight)
         ZStack {
+            // 弾の通り道（砲台 → 敵）。どの砲台が、どの敵を撃ったかが一目で分かる
+            if !reduceMotion && flight > 0 && !gone {
+                Path { p in
+                    p.move(to: shot.from)
+                    p.addQuadCurve(to: shot.to, control: CGPoint(x: (shot.from.x + shot.to.x) / 2, y: (shot.from.y + shot.to.y) / 2 - 48))
+                }
+                .trim(from: 0, to: flight)
+                .stroke(Theme.skyDeep.opacity(0.55), style: StrokeStyle(lineWidth: 1.6, lineCap: .round, dash: [3, 4]))
+            }
             // 倒れる敵（はじけて小さくなる）
             FoeFigure(weight: shot.foe.weight, stage: shot.stage, progress: shot.progress)
                 .scaleEffect(gone ? 0.01 : (burst > 0 ? 1.25 : 1))
@@ -240,7 +253,8 @@ struct ShotView: View {
                 .position(shot.to)
             // 玉
             if flight < 1 && !reduceMotion {
-                Circle().fill(Theme.skyDeep).frame(width: 7, height: 7).position(x: x, y: y)
+                Circle().fill(Theme.skyDeep.opacity(0.25)).frame(width: 18, height: 18).position(x: x, y: y)
+                Circle().fill(Theme.skyDeep).frame(width: 9, height: 9).position(x: x, y: y)
             }
             // 点
             Text(shot.combo > 1 ? "+\(shot.points)  ×\(shot.combo)" : "+\(shot.points)")
@@ -252,6 +266,11 @@ struct ShotView: View {
         }
         .allowsHitTesting(false)
         .task {
+            if freeze {
+                // 撮影用：弾が敵に届く少し前で止める
+                flight = 0.72
+                return
+            }
             if reduceMotion {
                 flight = 1
                 withAnimation(.easeOut(duration: 0.25)) { gone = true }

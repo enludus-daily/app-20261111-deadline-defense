@@ -30,8 +30,11 @@ struct SplitTemplate: Equatable, Identifiable, Sendable {
 }
 
 enum Content {
+    /// 撮影で日本語の画面を撮るとき（-screenshotScene <名前>_ja）に true。CI のシミュレータは英語のため
+    nonisolated(unsafe) static var forcedJapanese = false
+
     static var isJapanese: Bool {
-        (Bundle.main.preferredLocalizations.first ?? "ja").hasPrefix("ja")
+        forcedJapanese || (Bundle.main.preferredLocalizations.first ?? "ja").hasPrefix("ja")
     }
 
     /// 日付から、今日の作戦を 1 つ選ぶ（同じ日は同じ作戦）
