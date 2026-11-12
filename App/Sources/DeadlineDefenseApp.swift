@@ -67,7 +67,7 @@ struct RootView: View {
 /// 撮影で日本語の画面を撮るとき、画面の文字と日付を日本語にする
 struct ForcedJapanese: ViewModifier {
     @ViewBuilder
-    func body(content: Content) -> some View {
+    func body(content: Self.Content) -> some View {
         if Launch.forcesJapanese {
             content.environment(\.locale, Locale(identifier: "ja_JP"))
         } else {
