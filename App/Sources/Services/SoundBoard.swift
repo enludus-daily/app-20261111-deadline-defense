@@ -48,18 +48,37 @@ final class SoundBoard {
         }
     }
 
-    /// 音の並び（周波数・長さ秒）
+    /// 音の並び（周波数・長さ秒）。盤の世界の音：木のコマを置くコツ・大砲のドン・時計のベルのチリン
     static func notes(_ cue: Cue, combo: Int) -> [(Double, Double)] {
         switch cue {
-        case .tap: return [(1320, 0.03)]
-        case .shot: return [(880, 0.05), (740, 0.06)]
-        case .defeat: return [(659, 0.07), (988, 0.14)]
+        case .tap: return [(520, 0.035)]
+        case .shot: return [(98, 0.16)]
+        case .defeat: return [(1568, 0.06), (2093, 0.16)]
         case .combo:
             let step = pow(2.0, Double(min(combo, 6) * 2) / 12)
             return [(659 * step, 0.06), (988 * step, 0.14)]
         case .clear: return [(523, 0.09), (659, 0.09), (784, 0.09), (1047, 0.28)]
-        case .breach: return [(147, 0.12), (110, 0.22)]
+        case .breach: return [(147, 0.12), (110, 0.26)]
         case .wave: return [(784, 0.1), (988, 0.18)]
+        }
+    }
+
+    /// 音色：木（倍音を少なく・すぐ消える）、大砲（低い音＋ざらつき）、ベル（金属の倍音）
+    static func voice(_ cue: Cue, frequency f: Double, t: Double, index: Int) -> Double {
+        // 決まった並びのざらつき（毎回同じ音になる）
+        let noise = (sin(Double(index) * 12.9898) * 43_758.5453).truncatingRemainder(dividingBy: 1)
+        switch cue {
+        case .tap:
+            return sin(2 * .pi * f * t) * 0.7 + sin(2 * .pi * f * 2.7 * t) * 0.2 * exp(-60 * t) + noise * 0.25 * exp(-120 * t)
+        case .shot:
+            let sweep = f * (1 + 1.5 * exp(-25 * t))
+            return sin(2 * .pi * sweep * t) * 0.75 + noise * 0.45 * exp(-18 * t)
+        case .defeat, .combo, .wave:
+            return sin(2 * .pi * f * t) * 0.6 + sin(2 * .pi * f * 2.76 * t) * 0.22 + sin(2 * .pi * f * 5.4 * t) * 0.1
+        case .clear:
+            return sin(2 * .pi * f * t) * 0.65 + sin(2 * .pi * f * 2 * t) * 0.2 + sin(2 * .pi * f * 3 * t) * 0.08
+        case .breach:
+            return sin(2 * .pi * f * t) * 0.7 + noise * 0.2
         }
     }
 
@@ -73,7 +92,7 @@ final class SoundBoard {
                 let t = Double(i) / rate
                 let attack = min(1, t / 0.005)
                 let release = exp(-4.5 * t / length)
-                let tone = sin(2 * .pi * frequency * t) * 0.8 + sin(4 * .pi * frequency * t) * 0.15
+                let tone = Self.voice(cue, frequency: frequency, t: t, index: i)
                 samples.append(Int16(max(-1, min(1, tone * attack * release)) * 26_000))
             }
         }

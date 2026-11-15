@@ -13,8 +13,8 @@ struct OnboardingView: View {
                 Spacer()
                 if page < 2 {
                     Button("とばす") { finish() }
-                        .font(.system(size: 13))
-                        .foregroundStyle(Theme.sub)
+                        .font(.system(size: 14, weight: .bold, design: .rounded))
+                        .foregroundStyle(Theme.creamSub)
                         .frame(minWidth: 44, minHeight: 44)
                 }
             }
@@ -31,14 +31,12 @@ struct OnboardingView: View {
                 .transition(.opacity)
 
             VStack(spacing: 10) {
-                Text(title)
-                    .font(Theme.serif(26, .regular))
-                    .kerning(-0.6)
-                    .foregroundStyle(Theme.ink)
+                GameTitle(text: title, size: 27)
                     .multilineTextAlignment(.center)
+                    .minimumScaleFactor(0.7)
                 Text(detail)
-                    .font(.system(size: 14))
-                    .foregroundStyle(Theme.sub)
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(Theme.cream)
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -51,7 +49,7 @@ struct OnboardingView: View {
 
             HStack(spacing: 6) {
                 ForEach(0..<3, id: \.self) { i in
-                    Capsule().fill(i == page ? Theme.skyDeep : Theme.line).frame(width: i == page ? 18 : 6, height: 6)
+                    Capsule().fill(i == page ? Theme.gold : Theme.woodGrain).overlay(Capsule().stroke(Theme.woodGrain, lineWidth: 1)).frame(width: i == page ? 22 : 8, height: 8)
                 }
             }
             .padding(.bottom, 18)
@@ -65,17 +63,17 @@ struct OnboardingView: View {
                 }
             } label: {
                 Text(page < 2 ? LocalizedStringKey("次へ") : LocalizedStringKey("城を守りはじめる"))
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.system(size: 18, weight: .heavy, design: .rounded))
                     .foregroundStyle(.white)
-                    .frame(maxWidth: 360, minHeight: 52)
-                    .background(Capsule().fill(Theme.skyDeep))
+                    .frame(maxWidth: 360, minHeight: 54)
+                    .background(ChunkyFill(shape: Capsule()))
             }
             .buttonStyle(PressStyle())
             .padding(.horizontal, 24)
             .padding(.bottom, 24)
             .accessibilityIdentifier("main.onboardingNext")
         }
-        .background(Theme.paper.ignoresSafeArea())
+        .background(WoodTable())
     }
 
     private var title: LocalizedStringKey {
@@ -110,13 +108,8 @@ struct OnboardingScene: View {
         GeometryReader { proxy in
             let path = MarchPath(size: proxy.size, samples: 80)
             ZStack {
-                MapTheme.meadow.ground
-                Canvas { context, _ in
-                    var line = Path()
-                    line.addLines(path.points)
-                    context.stroke(line, with: .color(MapTheme.meadow.road), style: StrokeStyle(lineWidth: 18, lineCap: .round, lineJoin: .round))
-                    context.stroke(line, with: .color(Theme.card), style: StrokeStyle(lineWidth: 1, lineCap: .round, dash: [4, 7]))
-                }
+                HandDrawnGround(theme: .meadow)
+                HandDrawnRoad(points: path.points, theme: .meadow, width: 18)
                 CastleFigure(health: 10, level: 3)
                     .position(x: proxy.size.width * MarchPath.castleSpot.x, y: proxy.size.height * MarchPath.castleSpot.y - 6)
                 switch page {
@@ -134,12 +127,12 @@ struct OnboardingScene: View {
                         .scaleEffect(popped ? 0.01 : 1)
                         .opacity(popped ? 0 : 1)
                         .position(target)
-                    Circle().stroke(Theme.sky, lineWidth: 2).frame(width: 30, height: 30)
+                    Circle().stroke(Theme.gold, lineWidth: 4).frame(width: 30, height: 30)
                         .scaleEffect(popped ? 2 : 0.4)
                         .opacity(popped ? 0 : (phase > 0.5 ? 1 : 0))
                         .position(target)
                     if phase > 0 && phase < 1 {
-                        Circle().fill(Theme.skyDeep).frame(width: 7, height: 7)
+                        Circle().fill(Color(hex: 0x2E2E34)).overlay(Circle().stroke(Theme.ink, lineWidth: 1)).frame(width: 10, height: 10)
                             .position(x: proxy.size.width * 0.66 + (target.x - proxy.size.width * 0.66) * phase,
                                       y: proxy.size.height * 0.54 - 10 + (target.y - proxy.size.height * 0.54 + 10) * phase)
                     }
@@ -157,8 +150,7 @@ struct OnboardingScene: View {
                     }
                 }
             }
-            .clipShape(RoundedRectangle(cornerRadius: Theme.radiusL, style: .continuous))
-            .overlay(RoundedRectangle(cornerRadius: Theme.radiusL, style: .continuous).stroke(Theme.line, lineWidth: 1))
+            .boardFrame()
         }
         .accessibilityHidden(true)
         .task {

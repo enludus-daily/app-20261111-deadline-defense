@@ -25,11 +25,11 @@ struct AddBar: View {
                     .accessibilityIdentifier("main.title")
                 Button(action: add) {
                     Text("道に出す")
-                        .font(.system(size: 13, weight: .semibold))
+                        .font(.system(size: 14, weight: .heavy, design: .rounded))
                         .foregroundStyle(.white)
                         .padding(.horizontal, 12)
                         .frame(height: 34)
-                        .background(Capsule().fill(canAdd ? Theme.skyDeep : Theme.sky))
+                        .background(ChunkyFill(shape: Capsule(), color: canAdd ? Theme.peach : Theme.peachSoft, edge: canAdd ? Theme.peachDeep : Theme.line))
                 }
                 .buttonStyle(PressStyle())
                 .disabled(!canAdd)
@@ -39,7 +39,7 @@ struct AddBar: View {
             .padding(.trailing, 6)
             .frame(height: 46)
             .background(RoundedRectangle(cornerRadius: Theme.radiusM, style: .continuous).fill(Theme.card))
-            .overlay(RoundedRectangle(cornerRadius: Theme.radiusM, style: .continuous).stroke(focused ? Theme.sky : Theme.line, lineWidth: 1))
+            .overlay(RoundedRectangle(cornerRadius: Theme.radiusM, style: .continuous).stroke(focused ? Theme.skyDeep : Theme.ink.opacity(0.55), lineWidth: focused ? 2 : 1.5))
 
             ScrollView(.horizontal) {
                 HStack(spacing: 6) {
@@ -111,18 +111,17 @@ struct ChipButton: View {
                 if let dots {
                     HStack(spacing: 2) {
                         ForEach(0..<3, id: \.self) { i in
-                            Circle().fill(i < dots ? (selected ? Theme.skyDeep : Theme.sub) : Theme.line).frame(width: 4, height: 4)
+                            Circle().fill(i < dots ? (selected ? Color.white : Theme.sub) : (selected ? Color.white.opacity(0.35) : Theme.line)).frame(width: 4, height: 4)
                         }
                     }
                 }
                 Text(title)
             }
-            .font(.system(size: 13, weight: selected ? .semibold : .regular))
-            .foregroundStyle(selected ? Theme.skyDeep : Theme.ink.opacity(0.75))
+            .font(.system(size: 13, weight: selected ? .heavy : .semibold, design: .rounded))
+            .foregroundStyle(selected ? Color.white : Theme.ink.opacity(0.8))
             .padding(.horizontal, 12)
             .frame(height: 34)
-            .background(Capsule().fill(selected ? Theme.skySoft : Theme.card))
-            .overlay(Capsule().stroke(selected ? Theme.sky : Theme.line, lineWidth: 1))
+            .background(ChunkyFill(shape: Capsule(), color: selected ? Theme.skyDeep : Theme.card, edge: selected ? Theme.skyEdge : Theme.line))
         }
         .buttonStyle(PressStyle())
         .accessibilityAddTraits(selected ? .isSelected : [])

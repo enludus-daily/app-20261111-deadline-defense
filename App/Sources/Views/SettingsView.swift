@@ -104,6 +104,7 @@ struct SettingsView: View {
                 .frame(maxWidth: .infinity)
             }
             .background(Theme.paper)
+            .toolbarBackground(Theme.paper, for: .navigationBar)
             .navigationTitle(Text("設定"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -122,13 +123,11 @@ struct SettingsView: View {
     private func group<Inner: View>(_ title: LocalizedStringKey, @ViewBuilder content: () -> Inner) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
-                .font(.system(size: 11, weight: .medium))
-                .kerning(0.6)
-                .foregroundStyle(Theme.sub)
+                .font(.system(size: 14, weight: .heavy, design: .rounded))
+                .foregroundStyle(Theme.ink)
                 .padding(.leading, 4)
             VStack(spacing: 0) { content() }
-                .background(RoundedRectangle(cornerRadius: Theme.radiusM, style: .continuous).fill(Theme.card))
-                .overlay(RoundedRectangle(cornerRadius: Theme.radiusM, style: .continuous).stroke(Theme.line, lineWidth: 1))
+                .parchmentCard(radius: Theme.radiusM)
         }
     }
 }
@@ -206,17 +205,19 @@ struct ThemeSwatch: View {
                 MiniMap(theme: theme)
                     .frame(width: 84, height: 96)
                     .clipShape(RoundedRectangle(cornerRadius: Theme.radiusM, style: .continuous))
-                    .overlay(RoundedRectangle(cornerRadius: Theme.radiusM, style: .continuous).stroke(selected ? Theme.skyDeep : Theme.line, lineWidth: selected ? 1.5 : 1))
+                    .overlay(RoundedRectangle(cornerRadius: Theme.radiusM, style: .continuous).stroke(selected ? Theme.skyDeep : Theme.ink.opacity(0.6), lineWidth: selected ? 3 : 1.5))
                     .overlay(alignment: .topTrailing) {
                         if locked {
                             Image(systemName: "lock.fill")
-                                .font(.system(size: 9))
-                                .foregroundStyle(Theme.sub)
-                                .padding(6)
+                                .font(.system(size: 9, weight: .bold))
+                                .foregroundStyle(Theme.cream)
+                                .frame(width: 20, height: 20)
+                                .background(Circle().fill(Theme.wood).overlay(Circle().stroke(Theme.woodGrain, lineWidth: 1)))
+                                .padding(5)
                         }
                     }
                 Text(theme.name)
-                    .font(.system(size: 12, weight: selected ? .semibold : .regular))
+                    .font(.system(size: 12, weight: selected ? .heavy : .semibold, design: .rounded))
                     .foregroundStyle(Theme.ink)
             }
         }
@@ -233,20 +234,16 @@ struct MiniMap: View {
         GeometryReader { proxy in
             let path = MarchPath(size: proxy.size, samples: 60)
             ZStack {
-                theme.ground
-                Canvas { context, _ in
-                    var line = Path()
-                    line.addLines(path.points)
-                    context.stroke(line, with: .color(theme.road), style: StrokeStyle(lineWidth: 9, lineCap: .round, lineJoin: .round))
-                }
+                HandDrawnGround(theme: theme)
+                HandDrawnRoad(points: path.points, theme: theme, width: 9)
                 ForEach(Array([0.2, 0.55, 0.8].enumerated()), id: \.offset) { index, t in
                     FoeFigure(weight: 1, stage: index == 2 ? .gate : (index == 1 ? .near : .far), progress: t)
                         .scaleEffect(0.55)
                         .position(path.point(at: t))
                 }
                 CastleShape()
-                    .fill(Theme.card)
-                    .overlay(CastleShape().stroke(Theme.skyDeep.opacity(0.8), lineWidth: 0.8))
+                    .fill(Color(hex: 0xE2D6BC))
+                    .overlay(CastleShape().stroke(Theme.ink, lineWidth: 1))
                     .frame(width: 26, height: 17)
                     .position(x: proxy.size.width * MarchPath.castleSpot.x, y: proxy.size.height * MarchPath.castleSpot.y - 4)
             }

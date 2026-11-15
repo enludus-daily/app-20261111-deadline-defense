@@ -16,13 +16,13 @@ struct PaywallView: View {
                 VStack(alignment: .leading, spacing: 20) {
                     VStack(alignment: .leading, spacing: 6) {
                         Text(headline)
-                            .font(.system(size: 11, weight: .medium))
-                            .kerning(0.6)
-                            .foregroundStyle(Theme.peachDeep)
-                        Text("城を、もっと自分の形に")
-                            .font(Theme.serif(26, .regular))
-                            .kerning(-0.6)
-                            .foregroundStyle(Theme.ink)
+                            .font(.system(size: 12, weight: .heavy, design: .rounded))
+                            .foregroundStyle(Theme.cream)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 3)
+                            .background(Capsule().fill(Theme.peachDeep))
+                        GameTitle(text: "城を、もっと自分の形に", size: 26)
+                            .fixedSize(horizontal: false, vertical: true)
                         Text("しめきりディフェンス Pro は、1回の買い切りです。サブスクではありません。")
                             .font(.system(size: 13))
                             .foregroundStyle(Theme.sub)
@@ -33,8 +33,7 @@ struct PaywallView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         MiniMap(theme: previewTheme)
                             .frame(height: 150)
-                            .clipShape(RoundedRectangle(cornerRadius: Theme.radiusL, style: .continuous))
-                            .overlay(RoundedRectangle(cornerRadius: Theme.radiusL, style: .continuous).stroke(Theme.line, lineWidth: 1))
+                            .boardFrame(width: 7)
                             .animation(.easeOut(duration: 0.25), value: previewTheme)
                         HStack(spacing: 6) {
                             ForEach(MapTheme.allCases.filter(\.isPro)) { theme in
@@ -52,8 +51,7 @@ struct PaywallView: View {
                         Feature(systemName: "scissors", title: "分け方の型 30", detail: "確定申告・引っ越し・履歴書・旅行の予約など。無料は8つ。")
                         Feature(systemName: "square.grid.3x3", title: "1年の戦いの記録", detail: "52週のマス、期限内に倒した割合、よく倒す時間。", last: true)
                     }
-                    .background(RoundedRectangle(cornerRadius: Theme.radiusM, style: .continuous).fill(Theme.card))
-                    .overlay(RoundedRectangle(cornerRadius: Theme.radiusM, style: .continuous).stroke(Theme.line, lineWidth: 1))
+                    .parchmentCard(radius: Theme.radiusM)
 
                     Text("用事・締め切り・敵・砲台・分ける・通知・今日の戦果は、ずっと無料です。")
                         .font(.system(size: 12))
@@ -66,6 +64,7 @@ struct PaywallView: View {
                 .frame(maxWidth: .infinity)
             }
             .background(Theme.paper)
+            .toolbarBackground(Theme.paper, for: .navigationBar)
             // 値段・購入・復元は下に固定する（スクロールしなくても見える）
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 VStack(spacing: 10) {
@@ -153,10 +152,10 @@ struct PaywallView: View {
                             Text("·")
                             Text(product.displayPrice)
                         }
-                        .font(.system(size: 16, weight: .semibold))
+                        .font(.system(size: 18, weight: .heavy, design: .rounded))
                         .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity, minHeight: 52)
-                        .background(Capsule().fill(Theme.skyDeep))
+                        .frame(maxWidth: .infinity, minHeight: 54)
+                        .background(ChunkyFill(shape: Capsule()))
                     }
                     .buttonStyle(PressStyle())
                     .disabled(buying)
@@ -181,7 +180,7 @@ struct PaywallView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding(14)
-                .background(RoundedRectangle(cornerRadius: Theme.radiusM, style: .continuous).fill(Theme.card))
+                .parchmentCard(radius: Theme.radiusM)
             }
             if let message {
                 Text(message)
@@ -203,12 +202,12 @@ struct Feature: View {
         VStack(spacing: 0) {
             HStack(alignment: .top, spacing: 12) {
                 Image(systemName: systemName)
-                    .font(.system(size: 15))
-                    .foregroundStyle(Theme.skyDeep)
-                    .frame(width: 32, height: 32)
-                    .background(Circle().fill(Theme.skySoft))
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundStyle(.white)
+                    .frame(width: 34, height: 34)
+                    .background(ChunkyFill(shape: Circle()))
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(title).font(.system(size: 14, weight: .medium)).foregroundStyle(Theme.ink)
+                    Text(title).font(.system(size: 15, weight: .heavy, design: .rounded)).foregroundStyle(Theme.ink)
                     Text(detail).font(.system(size: 12)).foregroundStyle(Theme.sub).fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer(minLength: 0)

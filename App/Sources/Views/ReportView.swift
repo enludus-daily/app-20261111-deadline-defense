@@ -38,7 +38,7 @@ struct ReportView: View {
                     VStack(alignment: .leading, spacing: 10) {
                         HStack {
                             Text("守った日のマス")
-                                .font(Theme.serif(16, .medium))
+                                .font(Theme.display(16, .medium))
                                 .foregroundStyle(Theme.ink)
                             Spacer()
                             Text(model.isPro ? LocalizedStringKey("52週") : LocalizedStringKey("12週"))
@@ -56,6 +56,7 @@ struct ReportView: View {
                 .frame(maxWidth: .infinity)
             }
             .background(Theme.paper)
+            .toolbarBackground(Theme.paper, for: .navigationBar)
             .navigationTitle(Text("戦果"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -77,15 +78,14 @@ struct ReportView: View {
             BigNumber(value: chronicle.splitDefeated, label: "分けて倒した")
         }
         .padding(.vertical, 12)
-        .background(RoundedRectangle(cornerRadius: Theme.radiusL, style: .continuous).fill(Theme.card))
-        .overlay(RoundedRectangle(cornerRadius: Theme.radiusL, style: .continuous).stroke(Theme.line, lineWidth: 1))
+        .parchmentCard(radius: Theme.radiusL)
     }
 
     @ViewBuilder
     private func proSection(_ chronicle: Chronicle) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("くわしい戦いの記録")
-                .font(Theme.serif(16, .medium))
+                .font(Theme.display(16, .medium))
                 .foregroundStyle(Theme.ink)
             if model.isPro {
                 VStack(spacing: 0) {
@@ -94,7 +94,7 @@ struct ReportView: View {
                     StatRow(label: "これまでの点", value: Text("\(model.points)"))
                     StatRow(label: "城のレベル", value: Text("Lv.\(chronicle.castleLevel)"), last: true)
                 }
-                .background(RoundedRectangle(cornerRadius: Theme.radiusM, style: .continuous).fill(Theme.card))
+                .parchmentCard(radius: Theme.radiusM)
             } else {
                 Button {
                     model.activeSheet = nil
@@ -121,8 +121,7 @@ struct ReportView: View {
                             .foregroundStyle(Theme.sub)
                     }
                     .padding(14)
-                    .background(RoundedRectangle(cornerRadius: Theme.radiusM, style: .continuous).fill(Theme.card))
-                    .overlay(RoundedRectangle(cornerRadius: Theme.radiusM, style: .continuous).stroke(Theme.line, lineWidth: 1))
+                    .parchmentCard(radius: Theme.radiusM)
                 }
                 .buttonStyle(PressStyle())
                 .accessibilityIdentifier("main.proHistory")
@@ -158,8 +157,7 @@ struct BigNumber: View {
     var body: some View {
         VStack(spacing: 2) {
             Text("\(value)")
-                .font(Theme.serif(30, .regular))
-                .kerning(-1.5)
+                .font(.system(size: 32, weight: .black, design: .rounded))
                 .monospacedDigit()
                 .foregroundStyle(Theme.ink)
                 .contentTransition(.numericText())
@@ -187,7 +185,7 @@ struct StatRow: View {
                     .foregroundStyle(Theme.ink)
                 Spacer()
                 value
-                    .font(Theme.serif(16))
+                    .font(Theme.display(16))
                     .monospacedDigit()
                     .foregroundStyle(Theme.skyDeep)
             }
@@ -216,25 +214,26 @@ struct BattleCard: View {
                     .foregroundStyle(Theme.sub)
                 Spacer()
                 Text("しめきりディフェンス")
-                    .font(Theme.serif(11))
+                    .font(Theme.display(11))
                     .foregroundStyle(Theme.sub)
             }
             HStack(alignment: .bottom, spacing: 6) {
                 Text("\(record.defeated)")
-                    .font(Theme.serif(64, .regular))
-                    .kerning(-3)
+                    .font(.system(size: 64, weight: .black, design: .rounded))
+                    .kerning(-1)
                     .monospacedDigit()
                     .foregroundStyle(Theme.ink)
                 Text("体を倒した")
-                    .font(Theme.serif(16))
+                    .font(Theme.display(16))
                     .foregroundStyle(Theme.ink)
                     .padding(.bottom, 12)
             }
             // 倒した敵が城の前に並ぶ絵
             ZStack(alignment: .bottom) {
-                RoundedRectangle(cornerRadius: Theme.radiusM, style: .continuous)
-                    .fill(theme.ground)
-                Capsule().fill(theme.road).frame(height: 18).padding(.horizontal, 12).padding(.bottom, 22)
+                HandDrawnGround(theme: theme)
+                    .clipShape(RoundedRectangle(cornerRadius: Theme.radiusM, style: .continuous))
+                    .overlay(RoundedRectangle(cornerRadius: Theme.radiusM, style: .continuous).stroke(Theme.ink, lineWidth: 1.5))
+                Capsule().fill(theme.road).overlay(Capsule().stroke(Theme.ink.opacity(0.75), lineWidth: 2)).frame(height: 18).padding(.horizontal, 12).padding(.bottom, 22)
                 HStack(alignment: .bottom, spacing: 12) {
                     HStack(spacing: -4) {
                         ForEach(0..<min(record.defeated, 7), id: \.self) { i in
@@ -257,7 +256,7 @@ struct BattleCard: View {
             }
         }
         .padding(18)
-        .background(RoundedRectangle(cornerRadius: Theme.radiusL, style: .continuous).fill(Theme.card).shadow(color: Theme.shadowSoft, radius: 12, y: 4))
+        .parchmentCard(radius: Theme.radiusL)
         .overlay(alignment: .topLeading) {
             TapeShape()
                 .fill(Theme.tape.opacity(0.85))
@@ -272,7 +271,7 @@ struct BattleCard: View {
     private func cardStat(value: Int, label: LocalizedStringKey) -> some View {
         VStack(alignment: .leading, spacing: 1) {
             Text("\(value)")
-                .font(Theme.serif(20))
+                .font(Theme.display(20))
                 .monospacedDigit()
                 .foregroundStyle(Theme.ink)
             Text(label)
@@ -318,8 +317,8 @@ struct Heatmap: View {
 
     static func color(_ level: Int) -> Color {
         switch level {
-        case 0: return Theme.line
-        case 1: return Theme.skySoft
+        case 0: return Theme.line.opacity(0.45)
+        case 1: return Theme.sky.opacity(0.35)
         case 2: return Theme.sky.opacity(0.6)
         case 3: return Theme.sky
         default: return Theme.skyDeep

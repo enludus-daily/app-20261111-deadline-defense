@@ -9,7 +9,7 @@ struct FieldView: View {
 
     var body: some View {
         ZStack(alignment: .top) {
-            Theme.paper.ignoresSafeArea()
+            WoodTable()
             if horizontalSizeClass == .regular {
                 HStack(alignment: .top, spacing: 20) {
                     VStack(spacing: 12) {
@@ -23,6 +23,8 @@ struct FieldView: View {
                             AddBar()
                             WaveList(focusID: $focusID, onSplit: openSplit)
                         }
+                        .padding(14)
+                        .parchmentCard(radius: Theme.radiusL, fill: Theme.paper)
                         .padding(.top, 8)
                         .padding(.bottom, 24)
                     }
@@ -37,9 +39,13 @@ struct FieldView: View {
                         header
                         map
                             .frame(height: 360)
-                        NextTargetCard(foe: focused, onSplit: openSplit)
-                        AddBar()
-                        WaveList(focusID: $focusID, onSplit: openSplit)
+                        VStack(spacing: 14) {
+                            NextTargetCard(foe: focused, onSplit: openSplit)
+                            AddBar()
+                            WaveList(focusID: $focusID, onSplit: openSplit)
+                        }
+                        .padding(14)
+                        .parchmentCard(radius: Theme.radiusL, fill: Theme.paper)
                     }
                     .padding(.horizontal, 16)
                     .padding(.bottom, 28)
@@ -84,20 +90,14 @@ struct FieldView: View {
 
     private var header: some View {
         HStack(alignment: .center, spacing: 10) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text("しめきりディフェンス")
-                    .font(Theme.serif(20, .medium))
-                    .kerning(-0.4)
-                    .foregroundStyle(Theme.ink)
+            VStack(alignment: .leading, spacing: 6) {
+                GameTitle(text: "しめきりディフェンス", size: 24)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
                 HStack(spacing: 6) {
-                    Text("城 Lv.\(model.chronicle.castleLevel)")
-                    Text("·")
-                    Text("守った日 \(model.chronicle.streak(now: model.now))")
+                    StatToken(systemName: "shield.lefthalf.filled", text: "城 Lv.\(model.chronicle.castleLevel)", color: Theme.skyDeep)
+                    StatToken(systemName: "flame.fill", text: "守った日 \(model.chronicle.streak(now: model.now))", color: Theme.peach)
                 }
-                .font(.system(size: 11, weight: .medium))
-                .kerning(0.6)
-                .monospacedDigit()
-                .foregroundStyle(Theme.sub)
             }
             Spacer()
             HeaderButton(systemName: "chart.bar.xaxis", label: "戦果") {
@@ -123,22 +123,49 @@ struct HeaderButton: View {
     var body: some View {
         Button(action: action) {
             Image(systemName: systemName)
-                .font(.system(size: 15, weight: .regular))
-                .foregroundStyle(Theme.skyDeep)
+                .font(.system(size: 17, weight: .bold))
+                .foregroundStyle(Theme.ink)
                 .frame(width: 44, height: 44)
-                .background(Circle().fill(Theme.card).overlay(Circle().stroke(Theme.line, lineWidth: 1)))
+                .background(ChunkyFill(shape: Circle(), color: Theme.gold, edge: Theme.goldDeep))
         }
         .buttonStyle(PressStyle())
         .accessibilityLabel(Text(label))
     }
 }
 
-/// 押すと少し縮む（0.96 倍）。弾ませすぎない
+/// 押すとコマが盤に沈む（下へ 2pt・0.96 倍）
 struct PressStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .scaleEffect(configuration.isPressed ? 0.96 : 1)
-            .animation(.spring(response: 0.25, dampingFraction: 0.8), value: configuration.isPressed)
+            .offset(y: configuration.isPressed ? 2 : 0)
+            .animation(.spring(response: 0.22, dampingFraction: 0.6), value: configuration.isPressed)
+    }
+}
+
+/// 木の上の小さな札（城のレベル・守った日）
+struct StatToken: View {
+    let systemName: String
+    let text: LocalizedStringKey
+    let color: Color
+
+    var body: some View {
+        HStack(spacing: 4) {
+            Image(systemName: systemName)
+                .font(.system(size: 10, weight: .bold))
+                .foregroundStyle(Theme.cream)
+                .frame(width: 18, height: 18)
+                .background(Circle().fill(color).overlay(Circle().stroke(Theme.woodGrain, lineWidth: 1)))
+            Text(text)
+                .font(.system(size: 12, weight: .heavy, design: .rounded))
+                .monospacedDigit()
+                .foregroundStyle(Theme.cream)
+                .lineLimit(1)
+        }
+        .padding(.leading, 3)
+        .padding(.trailing, 9)
+        .frame(height: 24)
+        .background(Capsule().fill(Theme.woodDeep.opacity(0.85)).overlay(Capsule().stroke(Theme.woodGrain, lineWidth: 1)))
     }
 }
 
@@ -158,8 +185,7 @@ struct NextTargetCard: View {
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(RoundedRectangle(cornerRadius: Theme.radiusL, style: .continuous).fill(Theme.card))
-        .overlay(RoundedRectangle(cornerRadius: Theme.radiusL, style: .continuous).stroke(Theme.line, lineWidth: 1))
+        .parchmentCard()
     }
 
     private func content(_ foe: Foe) -> some View {
@@ -170,11 +196,13 @@ struct NextTargetCard: View {
                 .frame(width: 64, height: 64)
             VStack(alignment: .leading, spacing: 6) {
                 Text(stage == .breached ? LocalizedStringKey("城に届いた敵") : LocalizedStringKey("次に倒す1体"))
-                    .font(.system(size: 10, weight: .medium))
-                    .kerning(0.6)
-                    .foregroundStyle(stage >= .gate ? Theme.peachDeep : Theme.sub)
+                    .font(.system(size: 11, weight: .heavy, design: .rounded))
+                    .foregroundStyle(Theme.cream)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 2)
+                    .background(Capsule().fill(stage >= .gate ? Theme.peachDeep : Theme.wood))
                 Text(foe.title)
-                    .font(Theme.serif(18, .medium))
+                    .font(Theme.display(18, .medium))
                     .foregroundStyle(Theme.ink)
                     .lineLimit(2)
                     .minimumScaleFactor(0.8)
@@ -195,11 +223,11 @@ struct NextTargetCard: View {
                         model.defeat(foe)
                     } label: {
                         Label("済ませた", systemImage: "scope")
-                            .font(.system(size: 14, weight: .semibold))
+                            .font(.system(size: 15, weight: .heavy, design: .rounded))
                             .foregroundStyle(.white)
-                            .padding(.horizontal, 14)
-                            .frame(height: 40)
-                            .background(Capsule().fill(Theme.skyDeep))
+                            .padding(.horizontal, 16)
+                            .frame(height: 42)
+                            .background(ChunkyFill(shape: Capsule()))
                     }
                     .buttonStyle(PressStyle())
                     .accessibilityIdentifier("main.defeat")
@@ -223,7 +251,7 @@ struct NextTargetCard: View {
                 .frame(width: 70)
             VStack(alignment: .leading, spacing: 4) {
                 Text("道に敵はいません")
-                    .font(Theme.serif(17, .medium))
+                    .font(Theme.display(17, .medium))
                     .foregroundStyle(Theme.ink)
                 Text("締め切りのある用事を1行で入れると、敵になって歩き始めます。")
                     .font(.system(size: 12))
@@ -242,11 +270,11 @@ struct SmallActionButton: View {
     var body: some View {
         Button(action: action) {
             Label(title, systemImage: systemName)
-                .font(.system(size: 13, weight: .medium))
-                .foregroundStyle(Theme.skyDeep)
+                .font(.system(size: 13, weight: .bold, design: .rounded))
+                .foregroundStyle(Theme.ink)
                 .padding(.horizontal, 12)
                 .frame(height: 40)
-                .background(Capsule().fill(Theme.skySoft))
+                .background(ChunkyFill(shape: Capsule(), color: Theme.skySoft, edge: Theme.line))
         }
         .buttonStyle(PressStyle())
     }
@@ -271,11 +299,10 @@ struct WaveBanner: View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 3) {
                 Text("今日の波")
-                    .font(.system(size: 10, weight: .medium))
-                    .kerning(0.6)
-                    .foregroundStyle(Theme.sub)
+                    .font(.system(size: 11, weight: .heavy, design: .rounded))
+                    .foregroundStyle(Theme.peachDeep)
                 Text(wave.isEmpty ? LocalizedStringKey("今日の締め切りはありません") : "今日、\(wave.count)体がやってきます")
-                    .font(Theme.serif(17, .medium))
+                    .font(Theme.display(17, .medium))
                     .foregroundStyle(Theme.ink)
                 Text(model.tactic.title.text(japanese: Content.isJapanese))
                     .font(.system(size: 12))
@@ -300,8 +327,8 @@ struct WaveBanner: View {
         }
         .padding(.leading, 14)
         .padding(.vertical, 6)
-        .background(RoundedRectangle(cornerRadius: Theme.radiusL, style: .continuous).fill(Theme.card).shadow(color: Theme.shadowFloat, radius: 14, y: 6))
-        .overlay(RoundedRectangle(cornerRadius: Theme.radiusL, style: .continuous).stroke(Theme.line, lineWidth: 1))
+        .parchmentCard(radius: Theme.radiusL)
+        .shadow(color: Theme.shadowFloat, radius: 14, y: 6)
         .task {
             // 撮影では消さない
             guard Launch.scene == nil else { return }

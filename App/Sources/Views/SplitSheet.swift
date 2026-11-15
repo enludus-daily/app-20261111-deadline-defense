@@ -30,7 +30,7 @@ struct SplitSheet: View {
                     }
                     VStack(alignment: .leading, spacing: 4) {
                         Text(foe.title)
-                            .font(Theme.serif(20, .medium))
+                            .font(Theme.display(20, .medium))
                             .foregroundStyle(Theme.ink)
                         Text("小さい敵は1回で倒れます。締め切りは同じまま。")
                             .font(.system(size: 13))
@@ -41,7 +41,7 @@ struct SplitSheet: View {
                         ForEach(steps.indices, id: \.self) { index in
                             HStack(spacing: 10) {
                                 Text("\(index + 1)")
-                                    .font(Theme.serif(14))
+                                    .font(Theme.display(14))
                                     .foregroundStyle(Theme.skyDeep)
                                     .frame(width: 22)
                                 TextField("小さな一歩", text: $steps[index])
@@ -49,8 +49,7 @@ struct SplitSheet: View {
                             }
                             .padding(.horizontal, 12)
                             .frame(height: 46)
-                            .background(RoundedRectangle(cornerRadius: Theme.radiusM, style: .continuous).fill(Theme.card))
-                            .overlay(RoundedRectangle(cornerRadius: Theme.radiusM, style: .continuous).stroke(Theme.line, lineWidth: 1))
+                            .parchmentCard(radius: Theme.radiusM)
                         }
                         if steps.count < 4 {
                             Button {
@@ -67,7 +66,7 @@ struct SplitSheet: View {
 
                     VStack(alignment: .leading, spacing: 8) {
                         Text("分け方の型")
-                            .font(Theme.serif(15, .medium))
+                            .font(Theme.display(15, .medium))
                             .foregroundStyle(Theme.ink)
                         LazyVGrid(columns: [GridItem(.adaptive(minimum: 140), spacing: 8)], spacing: 8) {
                             ForEach(Content.templates) { template in
@@ -79,6 +78,7 @@ struct SplitSheet: View {
                 .padding(20)
             }
             .background(Theme.paper)
+            .toolbarBackground(Theme.paper, for: .navigationBar)
             .navigationTitle(Text("分ける"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -146,7 +146,7 @@ struct SplitSheet: View {
             .padding(.horizontal, 12)
             .frame(height: 40)
             .background(RoundedRectangle(cornerRadius: Theme.radiusS, style: .continuous).fill(selected ? Theme.skySoft : Theme.card))
-            .overlay(RoundedRectangle(cornerRadius: Theme.radiusS, style: .continuous).stroke(selected ? Theme.sky : Theme.line, lineWidth: 1))
+            .overlay(RoundedRectangle(cornerRadius: Theme.radiusS, style: .continuous).stroke(selected ? Theme.skyDeep : Theme.ink.opacity(0.45), lineWidth: selected ? 2 : 1))
         }
         .buttonStyle(PressStyle())
     }

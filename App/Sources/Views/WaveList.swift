@@ -45,12 +45,14 @@ struct WaveList: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .firstTextBaseline, spacing: 6) {
                 Text(title)
-                    .font(Theme.serif(16, .medium))
+                    .font(Theme.display(17, .medium))
                     .foregroundStyle(Theme.ink)
                 Text("\(count)")
-                    .font(Theme.serif(13))
+                    .font(.system(size: 12, weight: .heavy, design: .rounded))
                     .monospacedDigit()
-                    .foregroundStyle(Theme.sub)
+                    .foregroundStyle(Theme.cream)
+                    .frame(minWidth: 20, minHeight: 20)
+                    .background(Circle().fill(Theme.wood))
             }
             content()
         }
@@ -83,7 +85,7 @@ struct FoeRow: View {
         HStack(alignment: .top, spacing: 12) {
             // 時刻
             Text(foe.deadline, format: Self.timeFormat(foe.deadline, now: model.now, calendar: model.calendar))
-                .font(Theme.serif(13))
+                .font(Theme.display(13))
                 .monospacedDigit()
                 .foregroundStyle(stage >= .gate ? Theme.peachDeep : Theme.sub)
                 .frame(width: 54, alignment: .trailing)
@@ -91,8 +93,8 @@ struct FoeRow: View {
             // 線と敵
             ZStack(alignment: .top) {
                 Rectangle()
-                    .fill(Theme.line)
-                    .frame(width: 1)
+                    .fill(Theme.ink.opacity(0.35))
+                    .frame(width: 2)
                     .padding(.bottom, isLast ? 30 : 0)
                 FoeFigure(weight: foe.weight, stage: stage, progress: model.progress(of: foe), highlighted: focused)
                     .padding(.top, 4)
@@ -126,10 +128,10 @@ struct FoeRow: View {
                 model.defeat(foe)
             } label: {
                 Image(systemName: "scope")
-                    .font(.system(size: 15, weight: .medium))
-                    .foregroundStyle(Theme.skyDeep)
-                    .frame(width: 44, height: 44)
-                    .background(Circle().fill(Theme.skySoft))
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundStyle(.white)
+                    .frame(width: 42, height: 42)
+                    .background(ChunkyFill(shape: Circle()))
             }
             .buttonStyle(PressStyle())
             .padding(.top, 2)
@@ -159,10 +161,10 @@ struct DefeatedRow: View {
     var body: some View {
         HStack(spacing: 10) {
             Image(systemName: "checkmark")
-                .font(.system(size: 11, weight: .semibold))
-                .foregroundStyle(Theme.skyDeep)
+                .font(.system(size: 11, weight: .heavy))
+                .foregroundStyle(.white)
                 .frame(width: 22, height: 22)
-                .background(Circle().fill(Theme.skySoft))
+                .background(Circle().fill(Theme.mint).overlay(Circle().stroke(Theme.ink.opacity(0.6), lineWidth: 1)))
             Text(foe.title)
                 .font(.system(size: 14))
                 .strikethrough(true, color: Theme.sub)
@@ -219,8 +221,7 @@ struct SampleNotice: View {
         }
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(RoundedRectangle(cornerRadius: Theme.radiusM, style: .continuous).fill(Theme.skyPaper))
-        .overlay(RoundedRectangle(cornerRadius: Theme.radiusM, style: .continuous).stroke(Theme.line, lineWidth: 1))
+        .parchmentCard(radius: Theme.radiusM, fill: Theme.skyPaper)
     }
 }
 
@@ -232,11 +233,13 @@ struct TacticCard: View {
         let ja = Content.isJapanese
         VStack(alignment: .leading, spacing: 4) {
             Text("今日の作戦")
-                .font(.system(size: 10, weight: .medium))
-                .kerning(0.6)
-                .foregroundStyle(Theme.sub)
+                .font(.system(size: 11, weight: .heavy, design: .rounded))
+                .foregroundStyle(Theme.cream)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 2)
+                .background(Capsule().fill(Theme.peachDeep))
             Text(tactic.title.text(japanese: ja))
-                .font(Theme.serif(16, .medium))
+                .font(Theme.display(16, .medium))
                 .foregroundStyle(Theme.ink)
             Text(tactic.detail.text(japanese: ja))
                 .font(.system(size: 13))
@@ -245,6 +248,6 @@ struct TacticCard: View {
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(RoundedRectangle(cornerRadius: Theme.radiusM, style: .continuous).fill(Theme.peachSoft.opacity(0.55)))
+        .parchmentCard(radius: Theme.radiusM, fill: Theme.peachSoft.opacity(0.6))
     }
 }
