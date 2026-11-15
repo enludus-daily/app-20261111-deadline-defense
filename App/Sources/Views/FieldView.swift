@@ -161,6 +161,7 @@ struct StatToken: View {
                 .monospacedDigit()
                 .foregroundStyle(Theme.cream)
                 .lineLimit(1)
+                .minimumScaleFactor(0.7)
         }
         .padding(.leading, 3)
         .padding(.trailing, 9)
@@ -190,58 +191,62 @@ struct NextTargetCard: View {
 
     private func content(_ foe: Foe) -> some View {
         let stage = model.stage(of: foe)
-        return HStack(alignment: .center, spacing: 14) {
-            FoeFigure(weight: foe.weight, stage: stage, progress: model.progress(of: foe), highlighted: true)
-                .scaleEffect(1.4)
-                .frame(width: 64, height: 64)
-            VStack(alignment: .leading, spacing: 6) {
-                Text(stage == .breached ? LocalizedStringKey("城に届いた敵") : LocalizedStringKey("次に倒す1体"))
-                    .font(.system(size: 11, weight: .heavy, design: .rounded))
-                    .foregroundStyle(Theme.cream)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 2)
-                    .background(Capsule().fill(stage >= .gate ? Theme.peachDeep : Theme.wood))
-                Text(foe.title)
-                    .font(Theme.display(18, .medium))
-                    .foregroundStyle(Theme.ink)
-                    .lineLimit(2)
-                    .minimumScaleFactor(0.8)
-                HStack(spacing: 6) {
-                    Text(RemainingText.key(deadline: foe.deadline, now: model.now))
-                        .monospacedDigit()
-                    Text("·")
-                    Text(WeightLabel.key(foe.weight))
-                    if foe.isSample {
+        return VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .center, spacing: 14) {
+                FoeFigure(weight: foe.weight, stage: stage, progress: model.progress(of: foe), highlighted: true)
+                    .scaleEffect(1.4)
+                    .frame(width: 64, height: 64)
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(stage == .breached ? LocalizedStringKey("城に届いた敵") : LocalizedStringKey("次に倒す1体"))
+                        .font(.system(size: 11, weight: .heavy, design: .rounded))
+                        .foregroundStyle(Theme.cream)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 2)
+                        .background(Capsule().fill(stage >= .gate ? Theme.peachDeep : Theme.wood))
+                    Text(foe.title)
+                        .font(Theme.display(18, .medium))
+                        .foregroundStyle(Theme.ink)
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.8)
+                    HStack(spacing: 6) {
+                        Text(RemainingText.key(deadline: foe.deadline, now: model.now))
+                            .monospacedDigit()
                         Text("·")
-                        Text("見本")
+                        Text(WeightLabel.key(foe.weight))
+                        if foe.isSample {
+                            Text("·")
+                            Text("見本")
+                        }
                     }
+                    .font(.system(size: 12))
+                    .foregroundStyle(Theme.sub)
                 }
-                .font(.system(size: 12))
-                .foregroundStyle(Theme.sub)
-                HStack(spacing: 8) {
-                    Button {
-                        model.defeat(foe)
-                    } label: {
-                        Label("済ませた", systemImage: "scope")
-                            .font(.system(size: 15, weight: .heavy, design: .rounded))
-                            .foregroundStyle(.white)
-                            .padding(.horizontal, 16)
-                            .frame(height: 42)
-                            .background(ChunkyFill(shape: Capsule()))
-                    }
-                    .buttonStyle(PressStyle())
-                    .accessibilityIdentifier("main.defeat")
-                    if foe.weight >= 2 {
-                        SmallActionButton(title: "分ける", systemName: "scissors") { onSplit(foe) }
-                            .accessibilityIdentifier("main.split")
-                    }
-                    if stage >= .gate {
-                        SmallActionButton(title: "明日に回す", systemName: "arrow.uturn.backward") { model.deferToTomorrow(foe) }
-                    }
-                }
-                .padding(.top, 2)
+                Spacer(minLength: 0)
             }
-            Spacer(minLength: 0)
+            HStack(spacing: 8) {
+                Button {
+                    model.defeat(foe)
+                } label: {
+                    Label("済ませた", systemImage: "scope")
+                        .font(.system(size: 15, weight: .heavy, design: .rounded))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 14)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 44)
+                        .background(ChunkyFill(shape: Capsule()))
+                }
+                .buttonStyle(PressStyle())
+                .accessibilityIdentifier("main.defeat")
+                if foe.weight >= 2 {
+                    SmallActionButton(title: "分ける", systemName: "scissors") { onSplit(foe) }
+                        .accessibilityIdentifier("main.split")
+                }
+                if stage >= .gate {
+                    SmallActionButton(title: "明日に回す", systemName: "arrow.uturn.backward") { model.deferToTomorrow(foe) }
+                }
+            }
         }
     }
 
@@ -271,6 +276,8 @@ struct SmallActionButton: View {
         Button(action: action) {
             Label(title, systemImage: systemName)
                 .font(.system(size: 13, weight: .bold, design: .rounded))
+                .lineLimit(1)
+                .fixedSize()
                 .foregroundStyle(Theme.ink)
                 .padding(.horizontal, 12)
                 .frame(height: 40)
